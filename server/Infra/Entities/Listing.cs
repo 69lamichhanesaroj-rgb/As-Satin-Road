@@ -2,7 +2,7 @@
 
 namespace Infra.Entities;
 
-[System.ComponentModel.DataAnnotations.Schema.Table("Listing")]
+[Table("Listing")]
 public class Listing
 {
     [PrimaryKey]

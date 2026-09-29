@@ -2,7 +2,7 @@
 
 namespace Infra.Entities;
 
-[System.ComponentModel.DataAnnotations.Schema.Table("Orders")]
+[Table("Orders")]
 public class Order
 {
     [PrimaryKey]
