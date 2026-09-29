@@ -8,7 +8,7 @@ using LinqToDB.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var options = new DataOptions().UseSQLite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source= satinroad.db");
+var options = new DataOptions().UseSQLite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=satinroad.db");
 
 var dbOptions = new DataOptions<MyDatabaseConnection>(options);
 
@@ -46,7 +46,13 @@ using (var scope = app.Services.CreateScope())
     
 }
 
+app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().SetIsOriginAllowed(_ => true));
+
+app.UseOpenApi();
+app.UseSwaggerUi();
+
 app.UseAuthorization();
 app.MapControllers();
+
 
 app.Run();
