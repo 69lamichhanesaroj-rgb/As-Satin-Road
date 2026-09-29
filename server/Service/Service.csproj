@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Infra\Infra.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Facet" Version="6.6.12" />
+  </ItemGroup>
+
 </Project>
