@@ -6,6 +6,13 @@ const server = serve({
     // Serve index.html for all unmatched routes.
     "/*": index,
 
+    /*
+     * TODO #12 (Asim)
+     * Delete the 2 "/api/hello" routes below. They're leftovers from the Bun template.
+     * Our real API is the .NET backend, the client talks to it through Api.ts.
+     * Keep the "/*" line above: it makes every page url (/shop, /admin...) load the React app.
+     */
+
     "/api/hello": {
       async GET(req) {
         return Response.json({
