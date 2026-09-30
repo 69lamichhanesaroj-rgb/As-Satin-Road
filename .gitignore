@@ -345,6 +345,8 @@ __pycache__/
 # Telerik's JustMock configuration file
 *.jmconfig
 
+server/API/satinroad.db
+
 # BizTalk build output
 *.btp.cs
 *.btm.cs
