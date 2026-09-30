@@ -9,7 +9,7 @@ using Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var options = new DataOptions().UseSQLite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=satinroad.db");
+var options = new DataOptions().UseSQLite(builder.Configuration["DB"] ?? "Data Source=dev.db");
 
 var dbOptions = new DataOptions<MyDatabaseConnection>(options);
 
