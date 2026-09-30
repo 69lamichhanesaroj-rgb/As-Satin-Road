@@ -5,6 +5,7 @@ using Infra.Entities;
 using LinqToDB;
 using LinqToDB.Mapping;
 using LinqToDB.Data;
+using Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +14,15 @@ var options = new DataOptions().UseSQLite(builder.Configuration.GetConnectionStr
 var dbOptions = new DataOptions<MyDatabaseConnection>(options);
 
 builder.Services.AddScoped<MyDatabaseConnection>(_ => new MyDatabaseConnection(dbOptions));
+builder.Services.AddScoped<ListingService>();
+builder.Services.AddScoped<VendorService>();
 
-builder.Services.AddControllers();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<CategoryService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApiDocument();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
