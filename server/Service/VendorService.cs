@@ -25,18 +25,17 @@ namespace Service;
         {
             _db = db;
         }
-
-        /*
-         * TODO #23 (Rafal)
-         * The brief says MORE than 100 orders, so it must be > 100, not >= 100.
-         * Put the rule in its own small method IsFeatured(int totalSales) that returns a bool,
-         * and use it here. Then a test can check 100 -> false and 101 -> true.
-         * Home page (#18) shows these vendors at the top.
-         */
+        
+         /// Home page (#18) should show these vendors at the top.
+        public bool IsFeatured(int totalSales)
+        {
+            return totalSales > 100;
+        }
+        
         public List<Vendor> GetTopVendors()
         {
             return _db.Vendors
-                .Where(v => v.TotalSales >= 100 && !v.IsShutDown)
+                .Where(v => IsFeatured(v.TotalSales) && !v.IsShutDown)
                 .OrderByDescending(v => v.TotalSales)
                 .ToList();
         }

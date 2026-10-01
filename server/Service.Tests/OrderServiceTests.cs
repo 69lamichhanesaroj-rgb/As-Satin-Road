@@ -10,14 +10,6 @@ using Service;
  *   PlaceOrder: listing not found -> error, not enough stock -> error, normal order -> stock goes down
  */
 
-
-/*
- * TODO #23 (Rafal)
- * Featured vendor tests go in a new file VendorServiceTests.cs:
- *   IsFeatured(100) -> false, IsFeatured(101) -> true, IsFeatured(0) -> false
- */
-
-
 public class OrderServiceTests
 {
     [Fact]
