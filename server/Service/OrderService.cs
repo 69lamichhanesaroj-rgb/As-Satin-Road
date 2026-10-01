@@ -106,15 +106,11 @@ public class OrderService
             .Where(a => a.ListingId == listing.ListingId)
             .Set(a => a.StockQuantity, a => a.StockQuantity - dto.Quantity)
             .Update();
-
-        /*
-         * TODO #23 (Rafal)
-         * The brief counts ORDERS, not items. Right now 1 order of 5 items adds 5.
-         * Change it so every order adds 1 to TotalSales.
-         */
+        
+        // Increment the vendor's total sales by 1
         _db.Vendors
             .Where(v => v.VendorId == vendor.VendorId)
-            .Set(v => v.TotalSales, v => v.TotalSales + dto.Quantity)
+            .Set(v => v.TotalSales, v => v.TotalSales + 1)
             .Update();
 
         string msg = applyDiscount ? "Order placed with 20% loyalty discount!" : "Order placed successfully!";
