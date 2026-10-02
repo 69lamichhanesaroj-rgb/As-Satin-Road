@@ -11,10 +11,6 @@ public record CreateListingRequest(string VendorId, int CategoryId,string Title,
 
 public record UpdateListingRequest(string ListingId, string Title, decimal Price, int StockQuantity);
 
-/*
- * TODO #17 (Rafal)
- * All listing methods below return ListingDto instead of the Listing entity.
- */
 public record ListingDto(string ListingId, string VendorId, int CategoryId, string Title, decimal Price, int StockQuantity, string CategoryName, string VendorName);
 
 public class ListingService
