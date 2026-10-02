@@ -18,43 +18,32 @@ public class ListingController : ControllerBase
     }
 
     [HttpGet]
-    public List<Listing> GetActiveListings()
+    public List<ListingDto> GetActiveListings()
     {
         return _listingService.GetActiveListings();
     }
     
-    
-    
     [HttpPost]
-    public Listing CreateListing([FromBody] CreateListingRequest dto)
+    public ListingDto CreateListing([FromBody] CreateListingRequest dto)
     {
         return _listingService.CreateListing(dto);
     }
+    
+    [HttpPut]
+    public ListingDto UpdateListing([FromBody] UpdateListingRequest dto)
+    {
+        return _listingService.UpdateListing(dto);
+    }
 
-    /*
-     * TODO #17 (Rafal)
-     * 3 endpoints, each one just calls the method with the same name in ListingService:
-     *   UpdateListing  (HttpPut)    takes an UpdateListingRequest from the body, returns ListingDto
-     *   DeleteListing  (HttpDelete) takes the listing id (string), returns nothing
-     *   GetMyListings  (HttpGet)    takes the seller's user id (string), returns a list of ListingDto
-     * Also change GetActiveListings above to return ListingDto.
-     * Why: the Home page (#18) and My shop page (#19) call these through Api.ts.
-     */
+    [HttpDelete]
+    public void DeleteListing(string listingId)
+    {
+        _listingService.DeleteListing(listingId);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    [HttpGet]
+    public List<ListingDto> GetMyListings(string vendorId)
+    {
+        return _listingService.GetMyListings(vendorId);
+    }
 }
