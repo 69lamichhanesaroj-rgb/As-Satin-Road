@@ -16,8 +16,21 @@ export interface Category {
   categoryName?: string;
 }
 
-export interface Listing {
+export interface ListingDto {
   listingId?: string;
+  vendorId?: string;
+  /** @format int32 */
+  categoryId?: number;
+  title?: string;
+  /** @format decimal */
+  price?: number;
+  /** @format int32 */
+  stockQuantity?: number;
+  categoryName?: string;
+  vendorName?: string;
+}
+
+export interface CreateListingRequest {
   vendorId?: string;
   /** @format int32 */
   categoryId?: number;
@@ -28,10 +41,8 @@ export interface Listing {
   stockQuantity?: number;
 }
 
-export interface CreateListingRequest {
-  vendorId?: string;
-  /** @format int32 */
-  categoryId?: number;
+export interface UpdateListingRequest {
+  listingId?: string;
   title?: string;
   /** @format decimal */
   price?: number;
@@ -66,16 +77,28 @@ export interface PlaceOrderRequest {
   quantity?: number;
 }
 
-export interface Vendor {
-  vendorId?: string;
-  name?: string;
-  /** @format int32 */
-  totalSales?: number;
-  isShutDown?: boolean;
+export interface UserDto {
+  id?: string;
+  username?: string;
+  role?: string;
 }
 
-export interface CreateVendorRequest {
-  name?: string;
+export interface RegisterRequest {
+  username?: string;
+  password?: string;
+}
+
+export interface LoginRequest {
+  username?: string;
+  password?: string;
+}
+
+export interface ListingDeleteListingParams {
+  listingId?: string;
+}
+
+export interface ListingGetMyListingsParams {
+  vendorId?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -271,7 +294,7 @@ export class HttpClient<SecurityDataType = unknown> {
     baseUrl,
     cancelToken,
     ...params
-  }: FullRequestParams): Promise<HttpResponse<T, E>> => {
+  }: FullRequestParams): Promise<T> => {
     const secureParams =
       ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
         this.securityWorker &&
@@ -328,7 +351,7 @@ export class HttpClient<SecurityDataType = unknown> {
       }
 
       if (!response.ok) throw data;
-      return data;
+      return data.data;
     });
   };
 }
@@ -382,7 +405,7 @@ export class Api<
      * @request GET:/api/Listing/GetActiveListings
      */
     listingGetActiveListings: (params: RequestParams = {}) =>
-      this.request<Listing[], any>({
+      this.request<ListingDto[], any>({
         path: `/api/Listing/GetActiveListings`,
         method: "GET",
         format: "json",
@@ -400,11 +423,68 @@ export class Api<
       data: CreateListingRequest,
       params: RequestParams = {},
     ) =>
-      this.request<Listing, any>({
+      this.request<ListingDto, any>({
         path: `/api/Listing/CreateListing`,
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Listing
+     * @name ListingUpdateListing
+     * @request PUT:/api/Listing/UpdateListing
+     */
+    listingUpdateListing: (
+      data: UpdateListingRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<ListingDto, any>({
+        path: `/api/Listing/UpdateListing`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Listing
+     * @name ListingDeleteListing
+     * @request DELETE:/api/Listing/DeleteListing
+     */
+    listingDeleteListing: (
+      query: ListingDeleteListingParams = {},
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/api/Listing/DeleteListing`,
+        method: "DELETE",
+        query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Listing
+     * @name ListingGetMyListings
+     * @request GET:/api/Listing/GetMyListings
+     */
+    listingGetMyListings: (
+      query: ListingGetMyListingsParams = {},
+      params: RequestParams = {},
+    ) =>
+      this.request<ListingDto[], any>({
+        path: `/api/Listing/GetMyListings`,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
@@ -429,13 +509,13 @@ export class Api<
     /**
      * No description
      *
-     * @tags Vendor
-     * @name VendorGetTopVendors
-     * @request GET:/api/Vendor/GetTopVendors
+     * @tags User
+     * @name UserGetTopVendors
+     * @request GET:/api/User/GetTopVendors
      */
-    vendorGetTopVendors: (params: RequestParams = {}) =>
-      this.request<Vendor[], any>({
-        path: `/api/Vendor/GetTopVendors`,
+    userGetTopVendors: (params: RequestParams = {}) =>
+      this.request<UserDto[], any>({
+        path: `/api/User/GetTopVendors`,
         method: "GET",
         format: "json",
         ...params,
@@ -444,16 +524,30 @@ export class Api<
     /**
      * No description
      *
-     * @tags Vendor
-     * @name VendorCreateVendor
-     * @request POST:/api/Vendor/CreateVendor
+     * @tags User
+     * @name UserRegister
+     * @request POST:/api/User/Register
      */
-    vendorCreateVendor: (
-      data: CreateVendorRequest,
-      params: RequestParams = {},
-    ) =>
-      this.request<Vendor, any>({
-        path: `/api/Vendor/CreateVendor`,
+    userRegister: (data: RegisterRequest, params: RequestParams = {}) =>
+      this.request<UserDto, any>({
+        path: `/api/User/Register`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserLogin
+     * @request POST:/api/User/Login
+     */
+    userLogin: (data: LoginRequest, params: RequestParams = {}) =>
+      this.request<UserDto, any>({
+        path: `/api/User/Login`,
         method: "POST",
         body: data,
         type: ContentType.Json,
