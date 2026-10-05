@@ -17,16 +17,12 @@ public class Listing
 
     [Column] public int StockQuantity { get; set; }
 
-    /*
-     * TODO #13 (Saroj)
-     * Change Vendor and VendorId to User and UserId, see Vendor.cs.
-     */ 
-
     [Association(ThisKey = nameof(CategoryId), OtherKey = nameof(Category.CategoryId))]
     public Category? Category { get; set; }
 
-    [Association(ThisKey = nameof(VendorId), OtherKey = nameof(Vendor.VendorId))]
-    public Vendor? Vendor { get; set; }
+    // the seller is a normal user, VendorId holds their user id
+    [Association(ThisKey = nameof(VendorId), OtherKey = nameof(User.Id))]
+    public User? Vendor { get; set; }
 
 
 }
