@@ -30,9 +30,9 @@
 
 
 /*
- * TODO #23 (Rafal)
- * Featured vendors at the top of this page.
- * Load the featured vendors through "api" (VendorController.GetTopVendors)
+ * TODO #18 (Rafal)
+ * Featured vendors at the top of this page (the backend part was done in #23).
+ * Load the featured vendors through "api" (UserController.GetTopVendors)
  * and show them in a box above the listings, e.g. "Featured sellers: ..."
  * Why: hard story, vendors with more than 100 orders are featured on the landing page.
  */

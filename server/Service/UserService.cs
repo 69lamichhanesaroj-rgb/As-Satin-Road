@@ -20,18 +20,19 @@ namespace Service;
             _passwordHasher = passwordHasher;
         }
 
-        /*
-         * TODO #23 (Rafal)
-         * The brief says MORE than 100 orders, so it must be > 100, not >= 100.
-         * Put the rule in its own small method IsFeatured(int totalSales) that returns a bool,
-         * and use it here. Then a test can check 100 -> false and 101 -> true.
-         * Home page (#18) shows these vendors at the top.
-         */
-        public List<User> GetTopVendors()
+        // more than 100 orders = featured on the home page (#18)
+        public bool IsFeatured(int totalSales)
+        {
+            return totalSales > 100;
+        }
+
+        // "> 100" is written again here, linq2db can't turn IsFeatured() into SQL
+        public List<UserDto> GetTopVendors()
         {
             return _db.Users
-                .Where(v => v.TotalSales >= 100 && !v.IsShutDown)
-                .OrderByDescending(v => v.TotalSales)
+                .Where(u => u.TotalSales > 100 && !u.IsShutDown)
+                .OrderByDescending(u => u.TotalSales)
+                .Select(u => new UserDto(u.Id, u.UserName, u.Role))
                 .ToList();
         }
 

@@ -7,12 +7,8 @@ public class Order
 {
     [PrimaryKey]
     public string OrderId { get; set; } = Guid.NewGuid().ToString();
-    
-    /*
-     * TODO #13 (Saroj)
-     * After Vendor becomes User: BuyerId and VendorId are both user ids.
-     * Nothing to change in this class, just check that OrderService uses real user ids.
-     */
+
+    // BuyerId and VendorId are both user ids
     [Column, NotNull]
     public string BuyerId { get; set; } = string.Empty;
     

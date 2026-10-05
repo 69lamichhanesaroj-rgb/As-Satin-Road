@@ -16,6 +16,11 @@ public class UserController : ControllerBase
         _userService = userService;
         }
 
+    [HttpGet]
+    public List<UserDto> GetTopVendors()
+    {
+        return _userService.GetTopVendors();
+    }
 
     [HttpPost]
     public UserDto Register([FromBody] RegisterRequest dto)

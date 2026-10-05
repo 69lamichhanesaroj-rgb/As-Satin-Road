@@ -30,12 +30,12 @@ public class ListingService
         a.Price,
         a.StockQuantity,
         a.Category?.CategoryName ?? "",
-        a.Vendor?.Name ?? ""
+        a.Vendor?.UserName ?? ""
     );
     
     public List<ListingDto> GetActiveListings()
     {
-        var activeVendorIds = _db.Vendors.Where(v=> !v.IsShutDown).Select(v => v.VendorId);
+        var activeVendorIds = _db.Users.Where(v => !v.IsShutDown).Select(v => v.Id);
 
         var listings = _db.Listings.Where(a => activeVendorIds.Contains(a.VendorId) && a.StockQuantity > 0)
             .LoadWith(a => a.Category)
@@ -47,7 +47,7 @@ public class ListingService
     
     public ListingDto CreateListing(CreateListingRequest  dto)
     {
-        var vendor = _db.Vendors.FirstOrDefault(v=> v.VendorId == dto.VendorId);
+        var vendor = _db.Users.FirstOrDefault(v => v.Id == dto.VendorId);
         if (vendor == null)
             throw new Exception("Vendor not found");
 
@@ -63,7 +63,7 @@ public class ListingService
 
         var listing = new Listing()
         {
-            VendorId = vendor.VendorId,
+            VendorId = vendor.Id,
             CategoryId = dto.CategoryId,
             Title = dto.Title,
             Price = dto.Price,
