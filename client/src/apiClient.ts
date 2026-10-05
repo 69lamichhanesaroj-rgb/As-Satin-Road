@@ -1,57 +1,6 @@
-﻿const API_URL = "http://localhost:5000";
+import { Api } from "./api/Api";
 
-export async function register(
-    username: string,
-    password: string
-) {
-    const response = await fetch(
-        `${API_URL}/api/User/Register`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username,
-                password
-            })
-        }
-    );
-
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(
-            error.detail || "Registration failed"
-        );
-    }
-
-    return response.json();
-}
-
-export async function login(
-    username: string,
-    password: string
-) {
-    const response = await fetch(
-        `${API_URL}/api/User/Login`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username,
-                password
-            })
-        }
-    );
-
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(
-            error.detail || "Login failed"
-        );
-    }
-
-    return response.json();
-}
+// the one api object the whole app uses, every page imports it from here
+// after changing an endpoint in the backend, run "bun run generate:api" again
+// TODO #27 (Rafal): use the live Fly url in production instead of localhost
+export const api = new Api({ baseUrl: "http://localhost:5000" });
