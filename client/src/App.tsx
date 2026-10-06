@@ -1,14 +1,6 @@
 import "./index.css";
 import { Outlet, useLocation, useNavigate } from "react-router";
-
-function getSavedUser(): { id: string; username: string; role: string } | null {
-    try {
-        const raw = localStorage.getItem("user");
-        return raw ? JSON.parse(raw) : null;
-    } catch {
-        return null;
-    }
-}
+import { getSavedUser } from "./user";
 
 export function App() {
     const navigate = useNavigate();

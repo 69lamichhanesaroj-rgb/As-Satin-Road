@@ -13,6 +13,7 @@
   --error-bg: #fdecea;
   --error-text: #a4262c;
   --error-border: #f0b4b8;
+  --danger-dark: #7e1c21;
   --info-bg: #edf2e1;
   --info-text: #4a5d23;
   --info-border: #c9d4a9;
@@ -102,6 +103,23 @@ h3 {
   background: var(--primary-dark);
 }
 
+/* red is only for delete */
+
+.btn-danger {
+  background: var(--error-text);
+  border-color: var(--error-text);
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: var(--danger-dark);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 input,
 select {
   font: inherit;
@@ -120,6 +138,22 @@ form {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
+}
+
+/* stacked label + input, used in the shop modal */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  font-weight: 400;
 }
 
 :focus-visible {
