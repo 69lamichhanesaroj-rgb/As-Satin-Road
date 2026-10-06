@@ -2,15 +2,22 @@ import { useEffect, useState } from "react";
 import { api } from "../apiClient";
 import type { Category, ListingDto, UserDto } from "../api/Api";
 
-/*
- * TODO #20 (Gabriela)
- * Buy a product, on each listing:
- * a number input for the quantity + a Buy button
- * -> the button calls api (OrderController.PlaceOrder) with the logged-in user's id, the listing id and the quantity
- * -> show the message that comes back: normal order, 20% discount, or FBI raid
- * -> load the listings again, so the new stock shows
- * If the user isn't logged in, show "log in to buy" instead of the button (#13 keeps the user).
- */
+// same shape as App: the logged-in user, or null. Read on every render so it is always fresh.
+function getSavedUser(): { id: string; username: string; role: string } | null {
+    try {
+        const raw = localStorage.getItem("user");
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+}
+
+// what the product modal shows after the Buy button is pressed
+type BuyResult = {
+    kind: "ok" | "discount" | "raid" | "error";
+    message: string;
+    total: number | null;
+};
 
 export function HomePage() {
     const [listings, setListings] = useState<ListingDto[]>([]);
@@ -22,28 +29,47 @@ export function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        async function load() {
-            try {
-                setError("");
-                // all three calls at once: active listings, categories, featured vendors
-                const [l, c, f] = await Promise.all([
-                    api.api.listingGetActiveListings(),
-                    api.api.categoryGetCategories(),
-                    api.api.userGetTopVendors(),
-                ]);
-                setListings(l);
-                setCategories(c);
-                setFeatured(f);
-            } catch (e: any) {
-                // the backend sends the reason in "detail", the generated client puts it in e.error
-                setError(e.error?.detail ?? "Could not load listings");
-            } finally {
-                setLoading(false);
-            }
+    // product modal: which listing is open, quantity, order in flight, order result
+    const [selected, setSelected] = useState<ListingDto | null>(null);
+    const [quantity, setQuantity] = useState(1);
+    const [placing, setPlacing] = useState(false);
+    const [result, setResult] = useState<BuyResult | null>(null);
+
+    const user = getSavedUser();
+
+    async function load() {
+        try {
+            setError("");
+            // all three calls at once: active listings, categories, featured vendors
+            const [l, c, f] = await Promise.all([
+                api.api.listingGetActiveListings(),
+                api.api.categoryGetCategories(),
+                api.api.userGetTopVendors(),
+            ]);
+            setListings(l);
+            setCategories(c);
+            setFeatured(f);
+        } catch (e: any) {
+            // the backend sends the reason in "detail", the generated client puts it in e.error
+            setError(e.error?.detail ?? "Could not load listings");
+        } finally {
+            setLoading(false);
         }
+    }
+
+    useEffect(() => {
         load();
     }, []); // [] = run once when the page opens
+
+    // Escape closes the product modal
+    useEffect(() => {
+        if (!selected) return;
+        function onKey(e: KeyboardEvent) {
+            if (e.key === "Escape") closeModal();
+        }
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [selected]);
 
     // match listings to featured vendors by id (both come from the backend)
     const featuredIds = new Set(featured.map((u) => u.id));
@@ -76,6 +102,50 @@ export function HomePage() {
     function pick(categoryId: number | null) {
         setSelectedCategory(categoryId);
         setMenuOpen(false);
+    }
+
+    function openModal(l: ListingDto) {
+        setSelected(l);
+        setQuantity(1);
+        setResult(null);
+    }
+
+    function closeModal() {
+        setSelected(null);
+        setResult(null);
+        load(); // reload everything: new stock, new counts, maybe new featured vendors
+    }
+
+    async function handleBuy() {
+        if (!user || !selected) return;
+        setPlacing(true);
+        try {
+            // POST /api/Order -> normal order, 20% discount, or FBI raid
+            const r = await api.api.orderPlaceOrder({
+                buyerId: user.id,
+                listingId: selected.listingId,
+                quantity,
+            });
+            if (r.wasFbiRaid) {
+                setResult({ kind: "raid", message: r.message ?? "FBI raid!", total: null });
+            } else if (r.order?.isDiscountApplied) {
+                setResult({
+                    kind: "discount",
+                    message: r.message ?? "Discount applied!",
+                    total: r.order?.totalPrice ?? null,
+                });
+            } else {
+                setResult({
+                    kind: "ok",
+                    message: r.message ?? "Order placed!",
+                    total: r.order?.totalPrice ?? null,
+                });
+            }
+        } catch (e: any) {
+            setResult({ kind: "error", message: e.error?.detail ?? "Order failed", total: null });
+        } finally {
+            setPlacing(false);
+        }
     }
 
     if (loading) {
@@ -161,7 +231,19 @@ export function HomePage() {
                     ) : (
                         <div className="grid">
                             {visible.map((l) => (
-                                <article key={l.listingId} className="card">
+                                <article
+                                    key={l.listingId}
+                                    className="card"
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() => openModal(l)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" || e.key === " ") {
+                                            e.preventDefault();
+                                            openModal(l);
+                                        }
+                                    }}
+                                >
                                     {isFeatured(l) && <span className="badge">★ Featured seller</span>}
                                     <h3 className="card-title">{l.title}</h3>
                                     <p className="price">${Number(l.price ?? 0).toFixed(2)}</p>
@@ -175,6 +257,88 @@ export function HomePage() {
                     )}
                 </section>
             </div>
+
+            {selected && (
+                <div className="modal-backdrop" onClick={closeModal}>
+                    <div
+                        className="modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={selected.title}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button className="modal-close" onClick={closeModal} aria-label="Close">
+                            ✕
+                        </button>
+                        {isFeatured(selected) && <span className="badge">★ Featured seller</span>}
+                        <h3 className="card-title">{selected.title}</h3>
+                        <p className="price">${Number(selected.price ?? 0).toFixed(2)}</p>
+                        <p className="meta">Stock: {selected.stockQuantity}</p>
+                        <p className="meta">
+                            {selected.categoryName} · Seller: {selected.vendorName}
+                        </p>
+
+                        {user && selected.vendorId === user.id && (
+                            <p className="notice">This is your listing.</p>
+                        )}
+
+                        {result === null ? (
+                            user ? (
+                                <div className="buy-row">
+                                    <label htmlFor="qty">Quantity</label>
+                                    <input
+                                        id="qty"
+                                        className="qty"
+                                        type="number"
+                                        min={1}
+                                        max={selected.stockQuantity ?? undefined}
+                                        value={quantity}
+                                        onChange={(e) => {
+                                            const n = Number(e.target.value);
+                                            setQuantity(Number.isNaN(n) ? 1 : Math.max(1, n));
+                                        }}
+                                    />
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={handleBuy}
+                                        disabled={placing}
+                                    >
+                                        {placing ? "Placing order…" : "Buy"}
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="buy-row">
+                                    <button className="btn" disabled>
+                                        Log in to buy
+                                    </button>
+                                </div>
+                            )
+                        ) : (
+                            <div>
+                                <p
+                                    className={
+                                        result.kind === "ok"
+                                            ? "info"
+                                            : result.kind === "discount"
+                                              ? "notice"
+                                              : "error"
+                                    }
+                                >
+                                    {result.message}
+                                    {result.total != null && (
+                                        <> Total: ${Number(result.total).toFixed(2)}</>
+                                    )}
+                                </p>
+                                <div className="buy-row">
+                                    <button className="btn btn-primary" onClick={closeModal}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
