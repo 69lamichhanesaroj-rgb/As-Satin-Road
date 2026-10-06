@@ -13,6 +13,7 @@ public class GlobalExceptionHandler : IExceptionHandler
             NotFoundException => (StatusCodes.Status404NotFound, "Not found"),
             ValidationException => (StatusCodes.Status400BadRequest, "Invalid request"),
             ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
+            ForbiddenException => (StatusCodes.Status403Forbidden, "Forbidden"),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred")
         };
         var problemDetails = new ProblemDetails

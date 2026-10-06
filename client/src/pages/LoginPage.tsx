@@ -1,55 +1,58 @@
-/*
- * TODO #13 (Saroj)
- * Component: LoginPage (export it, frontend.tsx uses it for the "/login" route)
- * Takes no props.
- * Steps:
- *   1. Two inputs: username and password (keep them in state)
- *   2. A "Log in" button -> api Login -> save the user that comes back (id, name, role)
- *      e.g. in localStorage, so every page knows who is logged in -> go to the home page
- *   3. A "Register" button -> api Register -> then log in the same way
- *   4. Show the error from the backend, e.g. "Wrong username or password"
- *   5. A "Log out" button somewhere (nav bar) that clears the saved user
- * Why: my shop, my orders, buying and the admin page all need to know who the user is.
- * Flow: this page -> api (Api.ts) -> UserController -> UserService -> database
- */
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { api } from "../apiClient";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// placeholder so the route works, write your page inside this function
 export function LoginPage() {
-    return <h2>Log in</h2>;
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+
+    async function handleLogin() {
+        try {
+            setError("");
+            // POST /api/User/Login -> { id, username, role } - note lowercase from C# Id->id
+            const me = await api.api.userLogin({ username, password });
+            // app knows who you are: every page reads this
+            localStorage.setItem("user", JSON.stringify(me));
+            navigate("/");
+        } catch (e: any) {
+            // your GlobalExceptionHandler sends { status, title, detail }
+            // generated Api.ts does `throw data` when !response.ok, so e IS that JSON
+            setError(e?.detail ?? e?.Detail ?? e?.message ?? "Login failed");
+        }
+    }
+
+    async function handleRegister() {
+        try {
+            setError("");
+            const me = await api.api.userRegister({ username, password });
+            localStorage.setItem("user", JSON.stringify(me));
+            navigate("/");
+        } catch (e: any) {
+            setError(e?.detail ?? e?.Detail ?? e?.message ?? "Register failed");
+        }
+    }
+
+    return (
+        <div>
+            <h2>Log in</h2>
+            <input
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+            <button onClick={handleLogin}>Login</button>
+            <button onClick={handleRegister}>Register</button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
+    );
 }
+
+export default LoginPage;
