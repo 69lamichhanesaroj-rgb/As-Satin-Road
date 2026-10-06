@@ -21,15 +21,7 @@ builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
-
-
-/*
- * TODO #24 (Saroj)
- * Register the random number interface here (1 line):
- * IRandomNumberGenerator -> the real class that uses Random.
- * Why: OrderService gets it through its constructor. The real app gets the real one,
- * the tests give it a stub that returns whatever number the test wants.
- */
+builder.Services.AddSingleton<IRandomNumberGenerator, RandomNumberGenerator>();
 
 
 /*
