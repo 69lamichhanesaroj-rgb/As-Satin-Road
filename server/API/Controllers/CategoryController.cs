@@ -34,30 +34,15 @@ public class CategoryController : ControllerBase
         return _categoryService.CreateCategory(name);
     }
 
-    /*
-     * TODO #15 (Asim)
-     * Endpoint: RenameCategory (HttpPut)
-     * Takes 1 input from the body: a RenameCategoryRequest
-     * Calls: _categoryService.RenameCategory
-     * Returns: the updated Category
-     * Why: the admin page (#16) calls this through Api.ts when you click rename.
-     */
+    [HttpPut]
+    public Category RenameCategory([FromBody] RenameCategoryRequest dto)
+    {
+        return _categoryService.RenameCategory(dto);
+    }
 
-
-
-
-
-    /*
-     * TODO #15 (Asim)
-     * Endpoint: DeleteCategory (HttpDelete)
-     * Takes 1 input: the category id (int), from the url
-     * Calls: _categoryService.DeleteCategory
-     * Returns: nothing
-     * Why: the admin page (#16) calls this through Api.ts when you click delete.
-     */
-
-
-
-
-
+    [HttpDelete]
+    public void DeleteCategory(int categoryId)
+    {
+        _categoryService.DeleteCategory(categoryId);
+    }
 }

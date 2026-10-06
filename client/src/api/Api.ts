@@ -16,6 +16,12 @@ export interface Category {
   categoryName?: string;
 }
 
+export interface RenameCategoryRequest {
+  /** @format int32 */
+  categoryId?: number;
+  newName?: string;
+}
+
 export interface ListingDto {
   listingId?: string;
   vendorId?: string;
@@ -91,6 +97,11 @@ export interface RegisterRequest {
 export interface LoginRequest {
   username?: string;
   password?: string;
+}
+
+export interface CategoryDeleteCategoryParams {
+  /** @format int32 */
+  categoryId?: number;
 }
 
 export interface ListingDeleteListingParams {
@@ -394,6 +405,44 @@ export class Api<
         body: data,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Category
+     * @name CategoryRenameCategory
+     * @request PUT:/api/Category
+     */
+    categoryRenameCategory: (
+      data: RenameCategoryRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<Category, any>({
+        path: `/api/Category`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Category
+     * @name CategoryDeleteCategory
+     * @request DELETE:/api/Category
+     */
+    categoryDeleteCategory: (
+      query: CategoryDeleteCategoryParams = {},
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/api/Category`,
+        method: "DELETE",
+        query: query,
         ...params,
       }),
 
