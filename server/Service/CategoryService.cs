@@ -4,17 +4,8 @@ using LinqToDB;
 
 namespace Service;
 
-/*
- * TODO #15 (Asim)
- * Record: RenameCategoryRequest
- * Holds 2 values: CategoryId (int) and NewName (string)
- *
- * Why: when the admin renames a category, the frontend sends these 2 values together.
- * The controller receives them as this one small object and passes it to RenameCategory below.
- * Look at CreateListingRequest in ListingService.cs, it's the same idea.
- */
-
-
+// what the admin page sends when renaming a category
+public record RenameCategoryRequest(int CategoryId, string NewName);
 
 public class CategoryService
 {
@@ -38,60 +29,34 @@ public class CategoryService
         return new Category { CategoryId = id, CategoryName = name };
     }
 
-    /*
-     * TODO #15 (Asim)
-     * Method: RenameCategory
-     * Takes 1 input: a RenameCategoryRequest (the category id + the new name)
-     * Steps: check the new name isn't empty -> find the category by its id
-     *        -> if it doesn't exist, throw an error "Category not found"
-     *        -> save the new name in the database
-     * Returns: the updated Category
-     *
-     * Why: the admin page (#16) has a rename button.
-     * Flow: admin page -> Api.ts -> CategoryController (PUT, you add it there too) -> this method -> database
-     * Tip: CreateCategory above already checks for an empty name, do it the same way.
-     */
+    public Category RenameCategory(RenameCategoryRequest dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.NewName))
+            throw new ArgumentException("Category name cannot be empty.");
 
+        var category = _db.Categories.FirstOrDefault(c => c.CategoryId == dto.CategoryId);
+        if (category == null)
+            throw new Exception("Category not found");
 
+        _db.Categories
+            .Where(c => c.CategoryId == dto.CategoryId)
+            .Set(c => c.CategoryName, dto.NewName)
+            .Update();
 
+        category.CategoryName = dto.NewName;
+        return category;
+    }
 
+    // a category that listings still use can't be deleted, they would point to nothing
+    public void DeleteCategory(int categoryId)
+    {
+        var category = _db.Categories.FirstOrDefault(c => c.CategoryId == categoryId);
+        if (category == null)
+            throw new Exception("Category not found");
 
+        if (_db.Listings.Any(l => l.CategoryId == categoryId))
+            throw new Exception("Category is still used by listings");
 
-
-
-
-
-
-
-
-
-    /*
-     * TODO #15 (Asim)
-     * Method: DeleteCategory
-     * Takes 1 input: the category id (int)
-     * Steps: find the category -> if it doesn't exist, throw "Category not found"
-     *        -> check if any listing still uses this category id
-     *        -> if yes, throw an error "Category is still used by listings" (don't delete it)
-     *        -> if no, delete it from the database
-     * Returns: nothing (void)
-     *
-     * Why: the admin page (#16) has a delete button.
-     * Flow: admin page -> Api.ts -> CategoryController (DELETE, you add it there too) -> this method -> database
-     * Why the check: if we deleted a category that listings use, those listings would point to
-     * a category that doesn't exist anymore. A clear error is better than broken data.
-     */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        _db.Categories.Where(c => c.CategoryId == categoryId).Delete();
+    }
 }
