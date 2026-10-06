@@ -14,6 +14,83 @@
  */
 
 
+import {useState} from "react";
+import {login,register} from "../apiClient";
+
+
+export function LoginPage() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [message, setMessage] = useState("");
+    
+    
+    async function handleLogin() {
+        try {
+            setError("");
+            setMessage("");
+            
+            const loggedInUser = await login(username, password);
+            
+            localStorage.setItem("user", JSON.stringify(loggedInUser));
+            
+            setMessage(`Welcome ${loggedInUser.username}!`);
+        } catch (error) {
+            setError(error instanceof Error
+            ? error.message
+            : "Login failed");
+        }
+    }
+    
+    async function handleRegister() {
+        try {
+            setError("");
+            setMessage("");
+            
+            const newUser = await register(username, password);
+            
+            localStorage.setItem("user", JSON.stringify(newUser));
+            
+            setMessage(`Account created, welcome ${newUser.username}!`);
+            
+        } catch (error) {
+            setError(error instanceof Error
+            ? error.message
+            : "Registration failed");
+        }
+    }
+    
+    return (
+        <div>
+            <h1>Login</h1>
+            
+            <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                />
+            <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            />
+            <button onClick={handleLogin}>Login</button>
+            <button onClick={handleRegister}>Register</button>
+            {error && (
+            <p>{error}</p>)}
+
+            {message && (<p>{message}</p>)}
+        </div>
+        
+    );
+    
+    
+    
+}
+export default LoginPage;
+
 
 
 

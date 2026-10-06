@@ -6,6 +6,7 @@ using LinqToDB;
 using LinqToDB.Mapping;
 using LinqToDB.Data;
 using Service;
+using Service.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,8 @@ var dbOptions = new DataOptions<MyDatabaseConnection>(options);
 
 builder.Services.AddScoped<MyDatabaseConnection>(_ => new MyDatabaseConnection(dbOptions));
 builder.Services.AddScoped<ListingService>();
-builder.Services.AddScoped<VendorService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
 
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<CategoryService>();
@@ -71,7 +73,7 @@ using (var scope = app.Services.CreateScope())
      * When Vendor becomes User: create the User table here instead of Vendor.
      * Delete your dev.db after that, so the table is made again with the new columns.
      */
-    db.CreateTable<Vendor>(new CreateTableOptions
+    db.CreateTable<User>(new CreateTableOptions
     {
         TableOptions = TableOptions.CreateIfNotExists
     });

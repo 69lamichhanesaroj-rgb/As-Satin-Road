@@ -44,7 +44,7 @@ public class OrderService
         if (listing == null) throw new Exception("Listing not found.");
 
         //fetch vendor & check shutdown status
-        var vendor = _db.Vendors.FirstOrDefault(v => v.VendorId == listing.VendorId);
+        var vendor = _db.Users.FirstOrDefault(v => v.Id == listing.VendorId);
         if (vendor == null || vendor.IsShutDown)
             throw new Exception("This vendor is shut down and no longer operational.");
 
@@ -62,13 +62,13 @@ public class OrderService
         var random = new Random();
         if (random.Next(1, 101) == 1)
         {
-            _db.Vendors
-                .Where(v => v.VendorId == vendor.VendorId)
+            _db.Users
+                .Where(v => v.Id == vendor.Id)
                 .Set(v => v.IsShutDown, true)
                 .Update();
 
             _db.Listings
-                .Where(a => a.VendorId == vendor.VendorId)
+                .Where(a => a.VendorId == vendor.Id)
                 .Delete();
 
             return new OrderResultDto(null, true,
@@ -82,7 +82,7 @@ public class OrderService
          */
         // 20% Discount for 10+ previous orders with same vendor
 
-        var priorOrdersCount = _db.Orders.Count(a => a.BuyerId == dto.BuyerId && a.VendorId == vendor.VendorId);
+        var priorOrdersCount = _db.Orders.Count(a => a.BuyerId == dto.BuyerId && a.VendorId == vendor.Id);
         bool applyDiscount = priorOrdersCount > 10;
 
         decimal unitPrice = listing.Price;
@@ -93,7 +93,7 @@ public class OrderService
         var order = new Order
         {
             BuyerId = dto.BuyerId,
-            VendorId = vendor.VendorId,
+            VendorId = vendor.Id,
             ListingId = dto.ListingId,
             Quantity = dto.Quantity,
             TotalPrice = finalPrice,
@@ -112,8 +112,8 @@ public class OrderService
          * The brief counts ORDERS, not items. Right now 1 order of 5 items adds 5.
          * Change it so every order adds 1 to TotalSales.
          */
-        _db.Vendors
-            .Where(v => v.VendorId == vendor.VendorId)
+        _db.Users
+            .Where(v => v.Id == vendor.Id)
             .Set(v => v.TotalSales, v => v.TotalSales + dto.Quantity)
             .Update();
 
