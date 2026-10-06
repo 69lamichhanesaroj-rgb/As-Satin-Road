@@ -1,6 +1,6 @@
 /*
  * TODO #19 (Rafal)
- * Component: MyShopPage (export it, App.tsx uses it for the "/shop" route)
+ * Component: MyShopPage (export it, frontend.tsx uses it for the "/shop" route)
  * Takes no props. Only for a logged-in user (#13), else show "log in first".
  * Steps:
  *   1. Load my own listings through "api" (ListingController.GetMyListings with my user id)
@@ -48,3 +48,8 @@
 
 
 
+
+// placeholder so the route works, write your page inside this function
+export function MyShopPage() {
+    return <h2>My shop</h2>;
+}
