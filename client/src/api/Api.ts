@@ -83,6 +83,19 @@ export interface PlaceOrderRequest {
   quantity?: number;
 }
 
+export interface BuyerOrderDto {
+  orderId?: string;
+  listingId?: string;
+  listingTitle?: string;
+  /** @format int32 */
+  quantity?: number;
+  /** @format decimal */
+  totalPrice?: number;
+  isDiscountApplied?: boolean;
+  /** @format date-time */
+  orderDate?: string;
+}
+
 export interface UserDto {
   id?: string;
   username?: string;
@@ -99,9 +112,18 @@ export interface LoginRequest {
   password?: string;
 }
 
+export interface CategoryCreateCategoryParams {
+  userId?: string;
+}
+
+export interface CategoryRenameCategoryParams {
+  userId?: string;
+}
+
 export interface CategoryDeleteCategoryParams {
   /** @format int32 */
   categoryId?: number;
+  userId?: string;
 }
 
 export interface ListingDeleteListingParams {
@@ -110,6 +132,10 @@ export interface ListingDeleteListingParams {
 
 export interface ListingGetMyListingsParams {
   vendorId?: string;
+}
+
+export interface OrderGetOrdersByBuyerParams {
+  buyerId?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -398,10 +424,15 @@ export class Api<
      * @name CategoryCreateCategory
      * @request POST:/api/Category
      */
-    categoryCreateCategory: (data: string, params: RequestParams = {}) =>
+    categoryCreateCategory: (
+      query: CategoryCreateCategoryParams = {},
+      data: string,
+      params: RequestParams = {},
+    ) =>
       this.request<Category, any>({
         path: `/api/Category`,
         method: "POST",
+        query: query,
         body: data,
         type: ContentType.Json,
         format: "json",
@@ -416,12 +447,14 @@ export class Api<
      * @request PUT:/api/Category
      */
     categoryRenameCategory: (
+      query: CategoryRenameCategoryParams = {},
       data: RenameCategoryRequest,
       params: RequestParams = {},
     ) =>
       this.request<Category, any>({
         path: `/api/Category`,
         method: "PUT",
+        query: query,
         body: data,
         type: ContentType.Json,
         format: "json",
@@ -551,6 +584,25 @@ export class Api<
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrderGetOrdersByBuyer
+     * @request GET:/api/Order/by-buyer
+     */
+    orderGetOrdersByBuyer: (
+      query: OrderGetOrdersByBuyerParams = {},
+      params: RequestParams = {},
+    ) =>
+      this.request<BuyerOrderDto[], any>({
+        path: `/api/Order/by-buyer`,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),

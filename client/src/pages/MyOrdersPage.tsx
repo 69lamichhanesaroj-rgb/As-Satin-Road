@@ -40,10 +40,9 @@ function MyOrdersInner({ buyerId, orders, setOrders, error, setError }: {
     setError: (s: string) => void;
 }) {
     useEffect(() => {
-        // after `bun run generate:api`, hover orderGetOrdersByBuyer to fix exact shape, remove `as any`
-        (api.api as any).orderGetOrdersByBuyer({ buyerId })
-            .then((r: BuyerOrder[]) => setOrders(r ?? []))
-            .catch((e: any) => setError(e?.detail ?? e?.Detail ?? e?.message ?? "Could not load orders"));
+        api.api.orderGetOrdersByBuyer({ buyerId })
+            .then(r => setOrders(r))
+            .catch((e: any) => setError(e.error?.detail ?? "Could not load orders"));
     }, [buyerId]);
 
     if (error) {

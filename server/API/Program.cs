@@ -21,7 +21,7 @@ builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
-builder.Services.AddSingleton<IRandomNumberGenerator, RandomNumberGenerator>();
+builder.Services.AddSingleton<IRandomNumberGenerator, RealRandomNumberGenerator>();
 
 
 /*

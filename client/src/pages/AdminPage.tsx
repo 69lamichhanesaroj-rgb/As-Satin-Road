@@ -47,16 +47,14 @@ function AdminInner({ userId, categories, setCategories, newName, setNewName, er
         loadCategories();
     }, []);
 
+    // the backend sends the reason in "detail", the generated client puts it in e.error
     function showError(e: any) {
-        // ProblemDetails from backend: { status, title, detail }
-        setError(e?.detail ?? e?.Detail ?? e?.message ?? "Something went wrong");
+        setError(e.error?.detail ?? "Something went wrong");
     }
 
     async function addCategory() {
         try {
-            // after `bun run generate:api`, this becomes categoryCreateCategory(newName, { userId })
-            // if your generated signature still takes 1 arg, use: (newName as any)
-            await (api.api.categoryCreateCategory as any)(newName, { userId });
+            await api.api.categoryCreateCategory({ userId }, newName);
             setNewName("");
             setError("");
             loadCategories();
@@ -69,7 +67,7 @@ function AdminInner({ userId, categories, setCategories, newName, setNewName, er
         const name = prompt("New name:");
         if (!name) return;
         try {
-            await (api.api.categoryRenameCategory as any)({ categoryId: id, newName: name }, { userId });
+            await api.api.categoryRenameCategory({ userId }, { categoryId: id, newName: name });
             setError("");
             loadCategories();
         } catch (e: any) {
@@ -79,7 +77,7 @@ function AdminInner({ userId, categories, setCategories, newName, setNewName, er
 
     async function deleteCategory(id: number) {
         try {
-            await (api.api.categoryDeleteCategory as any)({ categoryId: id }, { userId });
+            await api.api.categoryDeleteCategory({ categoryId: id, userId });
             setError("");
             loadCategories();
         } catch (e: any) {
