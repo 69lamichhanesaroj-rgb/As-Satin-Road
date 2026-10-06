@@ -129,6 +129,10 @@ public class OrderService
      * As its own method it doesn't need the database, so it's easy to test (write the tests first).
      * Test ideas: 10 earlier orders -> full price, 11 -> 20% off, 0 -> full price.
      */
+    public decimal CalculateTotalPrice(decimal unitPrice, int quantity, int earlierOrders)
+    {
+        throw new NotImplementedException();
+    }
 
 
 

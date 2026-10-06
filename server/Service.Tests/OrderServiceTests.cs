@@ -31,27 +31,20 @@ public class OrderServiceTests
         Assert.Equal("Quantity must be greater than 0", warning.Message);
     }
 
-    /*
-     * TODO #22 (Asim)
-     * Discount tests, write them BEFORE the CalculateTotalPrice method (TDD: red -> green -> refactor).
-     * Each test: arrange (price, quantity, earlier orders) -> act (call the method) -> assert (the price).
-     *   10 earlier orders, price 100, quantity 1 -> 100 (no discount yet)
-     *   11 earlier orders, price 100, quantity 1 -> 80
-     *   0 earlier orders, price 50, quantity 2  -> 100
-     * A [Theory] with [InlineData] can do all 3 in one test.
-     */
+    // 20% off after MORE than 10 earlier orders from the same vendor
+    // InlineData = price, quantity, earlier orders, expected total
+    [Theory]
+    [InlineData(100, 1, 10, 100)]   // exactly 10 -> no discount yet
+    [InlineData(100, 1, 11, 80)]    // 11 -> 20% off
+    [InlineData(50, 2, 0, 100)]     // first order -> price x quantity
+    public void CalculateTotalPrice_Discount(int price, int quantity, int earlierOrders, int expected)
+    {
+        var service = new OrderService(null!);
 
+        var total = service.CalculateTotalPrice(price, quantity, earlierOrders);
 
-
-
-
-
-
-
-
-
-
-
+        Assert.Equal((decimal)expected, total);
+    }
 
     /*
      * TODO #24 (Saroj)
