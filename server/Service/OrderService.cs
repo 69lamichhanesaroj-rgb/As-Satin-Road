@@ -75,19 +75,10 @@ public class OrderService
                 "FBI RAID ! The buyer was an undercover agent. Vendor shut down permanently !");
         }
 
-        /*
-         * TODO #22 (Asim)
-         * Move the price calculation below into its own small method (see the TODO at the bottom),
-         * and call that method here instead.
-         */
-        // 20% Discount for 10+ previous orders with same vendor
-
+        // 20% discount after more than 10 earlier orders from the same vendor
         var priorOrdersCount = _db.Orders.Count(a => a.BuyerId == dto.BuyerId && a.VendorId == vendor.Id);
         bool applyDiscount = priorOrdersCount > 10;
-
-        decimal unitPrice = listing.Price;
-        decimal rawTotal = unitPrice * dto.Quantity;
-        decimal finalPrice = applyDiscount ? rawTotal * 0.80m : rawTotal;
+        decimal finalPrice = CalculateTotalPrice(listing.Price, dto.Quantity, priorOrdersCount);
 
         // Process purchase
         var order = new Order
@@ -117,25 +108,19 @@ public class OrderService
         return new OrderResultDto(order, false, msg);
     }
 
-    /*
-     * TODO #22 (Asim)
-     * Method: CalculateTotalPrice (public, so the tests can call it)
-     * Takes 3 inputs: unit price (decimal), quantity (int), number of earlier orders
-     *                 from this buyer to this vendor (int)
-     * Steps: total = price x quantity -> if earlier orders is MORE than 10, take 20% off
-     * Returns: the final price (decimal)
-     *
-     * Why: it's the hard story "after more than 10 orders the next one is 20% cheaper".
-     * As its own method it doesn't need the database, so it's easy to test (write the tests first).
-     * Test ideas: 10 earlier orders -> full price, 11 -> 20% off, 0 -> full price.
-     */
+    // price x quantity, 20% off if the buyer has MORE than 10 earlier orders from this vendor
+    // no database here, so the tests can call it directly
+    public decimal CalculateTotalPrice(decimal unitPrice, int quantity, int earlierOrders)
+    {
+        decimal total = unitPrice * quantity;
 
+        if (earlierOrders > 10)
+        {
+            total = total * 0.80m;
+        }
 
-
-
-
-
-
+        return total;
+    }
 
     /*
      * TODO #21 (Saroj)
