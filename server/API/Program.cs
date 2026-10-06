@@ -1,5 +1,6 @@
 
 
+using API;
 using Infra;
 using Infra.Entities;
 using LinqToDB;
@@ -50,8 +51,11 @@ builder.Services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApiDocument();
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 var app = builder.Build();
+app.UseExceptionHandler();
 
 
 using (var scope = app.Services.CreateScope())
