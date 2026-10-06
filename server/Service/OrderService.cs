@@ -121,17 +121,35 @@ public class OrderService
 
         return total;
     }
+    public record BuyerOrderDto(
+        string OrderId,
+        string ListingId,
+        string ListingTitle,
+        int Quantity,
+        decimal TotalPrice,
+        bool IsDiscountApplied,
+        DateTime OrderDate);
 
-    /*
-     * TODO #21 (Saroj)
-     * Method: GetOrdersByBuyer
-     * Takes 1 input: the buyer's user id (string)
-     * Steps: get all orders where BuyerId is that id, newest first
-     * Returns: a list of orders (a small response DTO is nicer, e.g. with the listing title)
-     *
-     * Why: the "My orders" page (#21) shows what the logged-in user bought.
-     * Flow: My orders page -> Api.ts -> OrderController (GET) -> this method -> database
-     */
+    public List<BuyerOrderDto> GetOrdersByBuyer(string buyerId)
+    {
+        var q =
+            from o in _db.Orders
+            join l in _db.Listings on o.ListingId equals l.ListingId into lj
+            from l in lj.DefaultIfEmpty()
+            where o.BuyerId == buyerId
+            orderby o.OrderDate descending
+            select new BuyerOrderDto(
+                o.OrderId,
+                o.ListingId,
+                l != null ? l.Title : "(removed listing)",
+                o.Quantity,
+                o.TotalPrice,
+                o.IsDiscountApplied,
+                o.OrderDate);
+
+        return q.ToList();
+    }
+
 
 
 

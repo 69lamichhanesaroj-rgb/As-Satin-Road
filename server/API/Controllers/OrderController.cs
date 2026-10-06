@@ -8,8 +8,8 @@ namespace API.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly OrderService _orderService;
-    
-    public  OrderController(OrderService orderService)
+
+    public OrderController(OrderService orderService)
     {
         _orderService = orderService;
     }
@@ -20,17 +20,10 @@ public class OrderController : ControllerBase
         return _orderService.PlaceOrder(dto);
     }
 
-    /*
-     * TODO #21 (Saroj)
-     * Endpoint: GetOrdersByBuyer (HttpGet)
-     * Takes 1 input: the buyer's user id (string)
-     * Calls: _orderService.GetOrdersByBuyer
-     * Returns: the list of orders
-     * Why: the My orders page (#21) calls this through Api.ts.
-     */
-
-
-
-
-
+    // GET /api/Order/by-buyer?buyerId=xxx — My orders page calls this
+    [HttpGet("by-buyer")]
+    public List<OrderService.BuyerOrderDto> GetOrdersByBuyer([FromQuery] string buyerId)
+    {
+        return _orderService.GetOrdersByBuyer(buyerId);
+    }
 }
