@@ -1,14 +1,7 @@
+using Infra.Entities;
+using LinqToDB;
 using Service;
-
-/*
- * TODO #25 (Asim)
- * Test database: a small class (new file TestDatabase.cs in this project) that makes an
- * in-memory SQLite database, creates the 4 tables and gives back a MyDatabaseConnection.
- * Every test gets a fresh, empty database, so tests don't mess with each other or with dev.db.
- * Then write tests for the rules that need the database:
- *   CreateListing: unknown vendor -> error, shut down vendor -> error, price 0 -> error
- *   PlaceOrder: listing not found -> error, not enough stock -> error, normal order -> stock goes down
- */
+using Service.Tests;
 
 public class OrderServiceTests
 {
@@ -30,6 +23,32 @@ public class OrderServiceTests
         var warning = Assert.Throws<Exception>(() => service.PlaceOrder(dto));
         Assert.Equal("Quantity must be greater than 0", warning.Message);
     }
+
+    [Fact]
+    public void PlaceOrder_ListingNotFound()
+    {
+        using var db = TestDatabase.Create();
+        var service = new OrderService(db);
+        var dto = new PlaceOrderRequest("buyer1", "nothing", 1);
+
+        var error = Assert.Throws<Exception>(() => service.PlaceOrder(dto));
+        Assert.Equal("Listing not found.", error.Message);
+    }
+
+    [Fact]
+    public void PlaceOrder_NotEnoughStock()
+    {
+        using var db = TestDatabase.Create();
+        db.Insert(new User { Id = "u1", UserName = "seller" });
+        db.Insert(new Listing { ListingId = "l1", VendorId = "u1", CategoryId = 1, Title = "Knife", Price = 10, StockQuantity = 2 });
+        var service = new OrderService(db);
+        var dto = new PlaceOrderRequest("buyer1", "l1", 5);
+
+        var error = Assert.Throws<Exception>(() => service.PlaceOrder(dto));
+        Assert.Equal("Not enough stock available.", error.Message);
+    }
+
+    // a normal order test needs the FBI raid stub first (#24), now there is a 1% random raid
 
     // 20% off after MORE than 10 earlier orders from the same vendor
     // InlineData = price, quantity, earlier orders, expected total
