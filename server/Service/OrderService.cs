@@ -8,30 +8,18 @@ namespace Service;
 public record PlaceOrderRequest(string BuyerId, string ListingId, int Quantity);
 public record OrderResultDto(Order? Order, bool WasFbiRaid, string Message);
 
-/*
- * TODO #24 (Saroj)
- * Interface: IRandomNumberGenerator (new file Service/IRandomNumberGenerator.cs)
- * 1 method: Next(int min, int max) that returns an int, like Random.Next
- * Plus a real class that implements it with Random.
- *
- * Why: the FBI raid uses a random number, and tests can't control a real Random.
- * With an interface, a test can pass a stub that always returns 1 (raid) or 50 (no raid).
- */
-
 
 public class OrderService
 {
     private readonly MyDatabaseConnection _db;
+    private readonly IRandomNumberGenerator _rng;
 
-    /*
-     * TODO #24 (Saroj)
-     * Add a second constructor parameter: IRandomNumberGenerator, and keep it in a field like _db.
-     */
-    public OrderService(MyDatabaseConnection db)
+    public OrderService(MyDatabaseConnection db, IRandomNumberGenerator rng)
     {
         _db = db;
-
+        _rng = rng;
     }
+
 
     public OrderResultDto PlaceOrder(PlaceOrderRequest dto)
     {
@@ -51,16 +39,8 @@ public class OrderService
         //stock availability check
         if (listing.StockQuantity < dto.Quantity)
             throw new Exception("Not enough stock available.");
-
-
-        /*
-         * TODO #24 (Saroj)
-         * Replace "new Random()" with the IRandomNumberGenerator field from the constructor.
-         * The rest of the raid stays the same.
-         */
-        // 1% Chance FBI Raid
-        var random = new Random();
-        if (random.Next(1, 101) == 1)
+        
+        if(_rng.Next(1,101) == 1)
         {
             _db.Users
                 .Where(v => v.Id == vendor.Id)
