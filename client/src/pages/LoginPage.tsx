@@ -17,9 +17,8 @@ export function LoginPage() {
             localStorage.setItem("user", JSON.stringify(me));
             navigate("/");
         } catch (e: any) {
-            // your GlobalExceptionHandler sends { status, title, detail }
-            // generated Api.ts does `throw data` when !response.ok, so e IS that JSON
-            setError(e?.detail ?? e?.Detail ?? e?.message ?? "Login failed");
+            // the backend sends the reason in "detail", the generated client puts it in e.error
+            setError(e.error?.detail ?? "Login failed");
         }
     }
 
@@ -30,7 +29,7 @@ export function LoginPage() {
             localStorage.setItem("user", JSON.stringify(me));
             navigate("/");
         } catch (e: any) {
-            setError(e?.detail ?? e?.Detail ?? e?.message ?? "Register failed");
+            setError(e.error?.detail ?? "Register failed");
         }
     }
 

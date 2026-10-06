@@ -58,7 +58,8 @@ public class UserService
         {
             UserName = dto.Username,
             PasswordHash = _passwordHasher.HashAndSaltPassword(dto.Password),
-            Role = "user"
+            // the first user who registers is the admin, everyone after is a normal user
+            Role = _db.Users.Any() ? "user" : "admin"
         };
         _db.Insert(user);
         return new UserDto(user.Id, user.UserName, user.Role);

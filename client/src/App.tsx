@@ -1,6 +1,5 @@
 import "./index.css";
-import { Outlet, useNavigate } from "react-router";
-import { useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router";
 
 function getSavedUser(): { id: string; username: string; role: string } | null {
     try {
@@ -13,34 +12,31 @@ function getSavedUser(): { id: string; username: string; role: string } | null {
 
 export function App() {
     const navigate = useNavigate();
-    const [user, setUser] = useState(getSavedUser);
+    // useLocation makes App render again every time the page changes,
+    // so the nav reads the saved user again right after log in or log out
+    useLocation();
+    const user = getSavedUser();
 
     function handleLogout() {
         localStorage.removeItem("user");
-        setUser(null);
         navigate("/login");
-    }
-
-    function go(path: string) {
-        setUser(getSavedUser());
-        navigate(path);
     }
 
     return (
         <div className="app">
             <h1>Satin Road</h1>
             <nav>
-                <button onClick={() => go('/')}>Home</button>
-                <button onClick={() => go('/shop')}>My shop</button>
-                <button onClick={() => go('/orders')}>My orders</button>
-                <button onClick={() => go('/admin')}>Admin</button>
+                <button onClick={() => navigate('/')}>Home</button>
+                <button onClick={() => navigate('/shop')}>My shop</button>
+                <button onClick={() => navigate('/orders')}>My orders</button>
+                <button onClick={() => navigate('/admin')}>Admin</button>
                 {user ? (
                     <>
                         <span>Logged in as {user.username} ({user.role})</span>
                         <button onClick={handleLogout}>Log out</button>
                     </>
                 ) : (
-                    <button onClick={() => go('/login')}>Log in</button>
+                    <button onClick={() => navigate('/login')}>Log in</button>
                 )}
             </nav>
             <Outlet />

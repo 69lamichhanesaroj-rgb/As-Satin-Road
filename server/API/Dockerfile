@@ -20,6 +20,8 @@ RUN dotnet publish "./API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:Use
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+# sqlite can't make the folder by itself
+RUN mkdir -p /app/data
 ENV ASPNETCORE_URLS=http://+:8080
 ENV DB="Data Source=/app/data/dev.db"
 ENTRYPOINT ["dotnet", "API.dll"]
