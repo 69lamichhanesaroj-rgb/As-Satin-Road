@@ -24,21 +24,23 @@ export function App() {
 
     return (
         <div className="app">
-            <h1>Satin Road</h1>
-            <nav>
-                <button onClick={() => navigate('/')}>Home</button>
-                <button onClick={() => navigate('/shop')}>My shop</button>
-                <button onClick={() => navigate('/orders')}>My orders</button>
-                <button onClick={() => navigate('/admin')}>Admin</button>
-                {user ? (
-                    <>
-                        <span>Logged in as {user.username} ({user.role})</span>
-                        <button onClick={handleLogout}>Log out</button>
-                    </>
-                ) : (
-                    <button onClick={() => navigate('/login')}>Log in</button>
-                )}
-            </nav>
+            <header className="header">
+                <h1 className="brand">Satin Road</h1>
+                <nav className="nav">
+                    <button className="btn" onClick={() => navigate('/')}>Home</button>
+                    <button className="btn" onClick={() => navigate('/shop')}>My shop</button>
+                    <button className="btn" onClick={() => navigate('/orders')}>My orders</button>
+                    <button className="btn" onClick={() => navigate('/admin')}>Admin</button>
+                    {user ? (
+                        <>
+                            <span className="user-label">Logged in as {user.username} ({user.role})</span>
+                            <button className="btn" onClick={handleLogout}>Log out</button>
+                        </>
+                    ) : (
+                        <button className="btn btn-primary" onClick={() => navigate('/login')}>Log in</button>
+                    )}
+                </nav>
+            </header>
             <Outlet />
         </div>
     );

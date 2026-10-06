@@ -1,5 +1,5 @@
 /*
- * TODO #19 (Rafal)
+ * TODO #19 (Gabriela)
  * Component: MyShopPage (export it, frontend.tsx uses it for the "/shop" route)
  * Takes no props. Only for a logged-in user (#13), else show "log in first".
  * Steps:
