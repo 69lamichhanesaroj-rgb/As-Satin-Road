@@ -7,12 +7,34 @@
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router";
 import { App } from "./App";
+import { HomePage } from "./pages/HomePage";
+import { MyShopPage } from "./pages/MyShopPage";
+import { MyOrdersPage } from "./pages/MyOrdersPage";
+import { AdminPage } from "./pages/AdminPage";
+import { LoginPage } from "./pages/LoginPage";
+
+// App is the parent (title + nav), the pages are its children and show in its <Outlet />
+// index: true = the page for "/" itself
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: "shop", element: <MyShopPage /> },
+      { path: "orders", element: <MyOrdersPage /> },
+      { path: "admin", element: <AdminPage /> },
+      { path: "login", element: <LoginPage /> },
+    ],
+  },
+]);
 
 const elem = document.getElementById("root")!;
 const app = (
   <StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </StrictMode>
 );
 

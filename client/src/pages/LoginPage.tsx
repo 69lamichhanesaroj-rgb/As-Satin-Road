@@ -1,6 +1,6 @@
 /*
  * TODO #13 (Saroj)
- * Component: LoginPage (export it, App.tsx uses it for the "/login" route)
+ * Component: LoginPage (export it, frontend.tsx uses it for the "/login" route)
  * Takes no props.
  * Steps:
  *   1. Two inputs: username and password (keep them in state)
@@ -48,3 +48,8 @@
 
 
 
+
+// placeholder so the route works, write your page inside this function
+export function LoginPage() {
+    return <h2>Log in</h2>;
+}

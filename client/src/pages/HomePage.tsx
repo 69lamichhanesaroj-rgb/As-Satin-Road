@@ -1,6 +1,6 @@
 /*
  * TODO #18 (Rafal)
- * Component: HomePage (export it, App.tsx uses it for the "/" route)
+ * Component: HomePage (export it, frontend.tsx uses it for the "/" route)
  * Takes no props.
  * Steps: when the page opens (useEffect), load the active listings and the categories through "api"
  *        -> keep them in state (useState)
@@ -56,3 +56,8 @@
  * -> load the listings again, so the new stock shows
  * If the user isn't logged in, show "log in to buy" instead of the button (#13 keeps the user).
  */
+
+// placeholder so the route works, write your page inside this function
+export function HomePage() {
+    return <h2>Home</h2>;
+}

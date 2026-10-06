@@ -1,6 +1,6 @@
 /*
  * TODO #16 (Asim)
- * Component: AdminPage (export it, App.tsx uses it for the "/admin" route)
+ * Component: AdminPage (export it, frontend.tsx uses it for the "/admin" route)
  * Takes no props. Only for a user with role "admin" (#13, #14), else show "admins only".
  * Steps:
  *   1. Load the categories through "api" (CategoryController.GetCategories) -> keep them in state
@@ -45,3 +45,8 @@
 
 
 
+
+// placeholder so the route works, write your page inside this function
+export function AdminPage() {
+    return <h2>Admin</h2>;
+}
