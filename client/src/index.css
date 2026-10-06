@@ -1,18 +1,119 @@
+/* Satin Road theme: warm sand background, deep olive primary, camel tan secondary. */
+
+:root {
+  --bg: #f4eee1;
+  --surface: #fffdf7;
+  --primary: #4a5d23;
+  --primary-dark: #3a4a1b;
+  --secondary: #c19a6b;
+  --secondary-soft: #e9dcc3;
+  --text: #2e2a23;
+  --muted: #6f6555;
+  --border: #ddd2bd;
+  --error-bg: #fdecea;
+  --error-text: #a4262c;
+  --error-border: #f0b4b8;
+  --info-bg: #edf2e1;
+  --info-text: #4a5d23;
+  --info-border: #c9d4a9;
+  --radius: 10px;
+  --gap: 1rem;
+  --shadow: 0 1px 3px rgba(46, 42, 35, 0.12);
+  --shadow-hover: 0 4px 12px rgba(46, 42, 35, 0.16);
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #0f0f0f;
-  color: #eee;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
 }
 
 .app {
-  max-width: 700px;
+  max-width: 1024px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
-h1, h2 {
+h1,
+h2,
+h3 {
+  color: var(--text);
+}
+
+/* ---- header + nav (App) ---- */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  margin-bottom: 1.5rem;
+}
+
+.brand {
+  margin: 0;
+  color: var(--primary);
+  font-size: 1.75rem;
+  letter-spacing: 0.5px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.user-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ---- buttons, inputs ---- */
+
+.btn {
+  font: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--primary);
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--secondary-soft);
+}
+
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
   color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+input,
+select {
+  font: inherit;
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+input {
+  flex: 1;
 }
 
 form {
@@ -21,22 +122,254 @@ form {
   margin-bottom: 1rem;
 }
 
-input {
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---- marketplace layout: sidebar + content ---- */
+
+.layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.content {
   flex: 1;
-  padding: 0.5rem;
+  min-width: 0;
 }
 
-button {
-  padding: 0.5rem 1rem;
-  cursor: pointer;
+/* ---- category sidebar (desktop) ---- */
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  position: sticky;
+  top: 1rem;
 }
 
-ul {
+.side-title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--primary);
+}
+
+.side-list {
   list-style: none;
+  margin: 0;
   padding: 0;
 }
 
-li {
-  padding: 0.5rem;
-  border-bottom: 1px solid #333;
+.side-item button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
+  cursor: pointer;
+}
+
+.side-item button:hover {
+  background: var(--secondary-soft);
+}
+
+.side-item.active button {
+  background: var(--primary);
+  color: #fff;
+}
+
+.count {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.side-item.active .count {
+  color: #fff;
+}
+
+/* ---- category menu (mobile dropdown, custom) ---- */
+
+.menu {
+  display: none;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.menu-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: inherit;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+}
+
+.menu-list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 10;
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-hover);
+}
+
+.menu-list button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  cursor: pointer;
+}
+
+.menu-list button:hover {
+  background: var(--secondary-soft);
+}
+
+.menu-list .active button {
+  background: var(--primary);
+  color: #fff;
+}
+
+.menu-list .active .count {
+  color: #fff;
+}
+
+/* ---- search bar ---- */
+
+.search {
+  align-items: center;
+}
+
+.search label {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.search input {
+  min-width: 0;
+}
+
+/* ---- listing cards grid ---- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--gap);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.card-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+.price {
+  margin: 0.25rem 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.meta {
+  margin: 0.15rem 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.badge {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ---- message boxes ---- */
+
+.error {
+  background: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-border);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.9rem;
+}
+
+.info {
+  background: var(--info-bg);
+  color: var(--info-text);
+  border: 1px solid var(--info-border);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.9rem;
+}
+
+/* ---- phone width: one column, menu instead of sidebar ---- */
+
+@media (max-width: 700px) {
+  .app {
+    padding: 1rem;
+  }
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .menu {
+    display: block;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }

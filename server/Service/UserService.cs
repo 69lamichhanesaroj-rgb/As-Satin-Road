@@ -26,13 +26,13 @@ public class UserService
     {
         return totalSales > 100;
     }
-
-    // "> 100" is written again here, linq2db can't turn IsFeatured() into SQL
     public List<UserDto> GetTopVendors()
     {
         return _db.Users
-            .Where(u => u.TotalSales > 100 && !u.IsShutDown)
-            .OrderByDescending(u => u.TotalSales)
+            .Where(u => !u.IsShutDown)              // -> SQL
+            .OrderByDescending(u => u.TotalSales)   // -> SQL
+            .ToList()                               // fetch the rows, now we're in C# again
+            .Where(u => IsFeatured(u.TotalSales))   // plain LINQ-to-objects, IsFeatured works here
             .Select(u => new UserDto(u.Id, u.UserName, u.Role))
             .ToList();
     }
