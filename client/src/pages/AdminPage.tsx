@@ -1,52 +1,85 @@
+import {useEffect, useState} from "react";
+import {api} from "../apiClient";
+import type {Category} from "../api/Api";
+
 /*
- * TODO #16 (Asim)
- * Component: AdminPage (export it, frontend.tsx uses it for the "/admin" route)
- * Takes no props. Only for a user with role "admin" (#13, #14), else show "admins only".
- * Steps:
- *   1. Load the categories through "api" (CategoryController.GetCategories) -> keep them in state
- *   2. A text input + "Add" button -> api CreateCategory -> load the list again
- *   3. On each category: a rename button (asks for the new name) -> api RenameCategory
- *      and a delete button -> api DeleteCategory -> load the list again
- *   4. Show the error from the backend, e.g. "Category is still used by listings"
- * Why: user story "an administrator can manage categories".
- * Flow: this page -> api (Api.ts) -> CategoryController -> CategoryService -> database
+ * TODO #14 (Saroj)
+ * Only an admin may see this page. When login (#13) saves the user,
+ * check the role here: if it's not "admin", show "admins only" instead of the page.
  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// placeholder so the route works, write your page inside this function
 export function AdminPage() {
-    return <h2>Admin</h2>;
+
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [newName, setNewName] = useState("");
+    const [error, setError] = useState("");
+
+    // get the list from the backend and keep it in state
+    function loadCategories() {
+        api.api.categoryGetCategories().then(r => setCategories(r));
+    }
+
+    // load once when the page opens
+    useEffect(() => {
+        loadCategories();
+    }, []);
+
+    // the backend sends the reason in "detail", e.g. "Category is still used by listings"
+    function showError(e: any) {
+        setError(e.error?.detail ?? "Something went wrong");
+    }
+
+    async function addCategory() {
+        try {
+            await api.api.categoryCreateCategory(newName);
+            setNewName("");
+            setError("");
+            loadCategories();
+        } catch (e: any) {
+            showError(e);
+        }
+    }
+
+    async function renameCategory(id: number) {
+        const name = prompt("New name:");
+        if (!name) return;
+        try {
+            await api.api.categoryRenameCategory({categoryId: id, newName: name});
+            setError("");
+            loadCategories();
+        } catch (e: any) {
+            showError(e);
+        }
+    }
+
+    async function deleteCategory(id: number) {
+        try {
+            await api.api.categoryDeleteCategory({categoryId: id});
+            setError("");
+            loadCategories();
+        } catch (e: any) {
+            showError(e);
+        }
+    }
+
+    return (
+        <div>
+            <h2>Admin: categories</h2>
+
+            <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="New category"/>
+            <button onClick={addCategory}>Add</button>
+
+            {error && <p>{error}</p>}
+
+            <ul>
+                {categories.map(c =>
+                    <li key={c.categoryId}>
+                        {c.categoryName}
+                        <button onClick={() => renameCategory(c.categoryId!)}>Rename</button>
+                        <button onClick={() => deleteCategory(c.categoryId!)}>Delete</button>
+                    </li>
+                )}
+            </ul>
+        </div>
+    );
 }
