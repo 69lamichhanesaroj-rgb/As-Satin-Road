@@ -295,6 +295,7 @@ form {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 1rem;
+  cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -330,6 +331,72 @@ form {
   color: #fff;
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+/* ---- product modal ---- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(46, 42, 35, 0.5);
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-hover);
+  padding: 1.5rem;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font: inherit;
+  font-size: 1.1rem;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  background: var(--secondary-soft);
+  color: var(--text);
+}
+
+.buy-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.qty {
+  flex: none;
+  width: 5rem;
+}
+
+/* tan notice box: "This is your listing", 20% discount message */
+
+.notice {
+  background: var(--secondary-soft);
+  border: 1px solid var(--secondary);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.9rem;
 }
 
 /* ---- message boxes ---- */
