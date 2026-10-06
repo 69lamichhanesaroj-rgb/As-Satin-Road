@@ -1,16 +1,8 @@
 import { useEffect, useState } from "react";
 import { api } from "../apiClient";
 import type { Category, ListingDto, UserDto } from "../api/Api";
-
-// same shape as App: the logged-in user, or null. Read on every render so it is always fresh.
-function getSavedUser(): { id: string; username: string; role: string } | null {
-    try {
-        const raw = localStorage.getItem("user");
-        return raw ? JSON.parse(raw) : null;
-    } catch {
-        return null;
-    }
-}
+import { Modal } from "../components/Modal";
+import { getSavedUser } from "../user";
 
 // what the product modal shows after the Buy button is pressed
 type BuyResult = {
@@ -60,16 +52,6 @@ export function HomePage() {
     useEffect(() => {
         load();
     }, []); // [] = run once when the page opens
-
-    // Escape closes the product modal
-    useEffect(() => {
-        if (!selected) return;
-        function onKey(e: KeyboardEvent) {
-            if (e.key === "Escape") closeModal();
-        }
-        window.addEventListener("keydown", onKey);
-        return () => window.removeEventListener("keydown", onKey);
-    }, [selected]);
 
     // match listings to featured vendors by id (both come from the backend)
     const featuredIds = new Set(featured.map((u) => u.id));
@@ -259,18 +241,8 @@ export function HomePage() {
             </div>
 
             {selected && (
-                <div className="modal-backdrop" onClick={closeModal}>
-                    <div
-                        className="modal"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label={selected.title}
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <button className="modal-close" onClick={closeModal} aria-label="Close">
-                            ✕
-                        </button>
-                        {isFeatured(selected) && <span className="badge">★ Featured seller</span>}
+                <Modal label={selected.title ?? "Product"} onClose={closeModal}>
+                    {isFeatured(selected) && <span className="badge">★ Featured seller</span>}
                         <h3 className="card-title">{selected.title}</h3>
                         <p className="price">${Number(selected.price ?? 0).toFixed(2)}</p>
                         <p className="meta">Stock: {selected.stockQuantity}</p>
@@ -336,8 +308,7 @@ export function HomePage() {
                                 </div>
                             </div>
                         )}
-                    </div>
-                </div>
+                </Modal>
             )}
         </div>
     );
