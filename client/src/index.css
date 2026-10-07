@@ -499,6 +499,8 @@ select:focus {
      so the title sits in the same place on every page, with or without a button */
   min-height: calc(36px + 1.8rem);
   padding-block: 0.9rem;
+  /* free space under the bar, so a card that lifts on hover doesn't slide under it */
+  margin-bottom: 0.75rem;
   background: var(--page-bg);
 }
 
@@ -970,10 +972,9 @@ select:focus {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  font: inherit;
-  font-size: 1rem;
   width: 2rem;
   height: 2rem;
+  padding: 0;
   display: grid;
   place-items: center;
   background: var(--surface-3);
