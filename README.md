@@ -1,7 +1,7 @@
 # Satin Road
 
 A parody dark web marketplace. Users can sell and buy products, an admin manages the categories.
-School project by Asim, Saroj and Rafal.
+School project by Asim, Saroj and Gabriela.
 
 Hard stories we built:
 - 20% discount when a buyer has more than 10 earlier orders from the same seller
@@ -134,4 +134,42 @@ but Linq2db can't turn a C# method into SQL, so it crashed when it ran. A test o
 
 ## Sustainability (Lighthouse)
 
-TODO #29 (Rafal): Lighthouse scores + what we changed to make the app lighter.
+We ran Lighthouse on the home page against a production build:
+
+```
+bun run build && bun run start
+```
+and
+```
+lighthouse http://localhost:3000/ --only-categories=performance,accessibility,best-practices,seo --preset "desktop"
+```
+
+**Before** (production build):
+
+| Category | Score |
+|---|---|
+| Performance | 74 |
+| Accessibility | 100 |
+| Best Practices | 100 |
+| SEO | 92 |
+
+**What we changed**
+
+- `client/src/index.ts`: served a real `/robots.txt`. The `/*` SPA fallback was returning
+  `index.html` for it, so Lighthouse read the homepage as robots.txt and reported 18 errors.
+  This fixed the only failing SEO audit.
+- `client/src/pages/HomePage.tsx`: gave the hero image explicit `width`/`height` and
+  `fetchpriority="high"` (it is the LCP image and its missing size was one of the two layout shifts).
+
+**After**
+
+| Category | Score |
+|---|---|
+| Performance | 75 |
+| Accessibility | 100 |
+| Best Practices | 100 |
+| SEO | **100** |
+
+SEO improved from **92 to 100** thanks to the robots.txt route. Performance only moved
+from **74 to 75**: it is held back by Cumulative Layout Shift, which stayed at **~0.84** and is
+nearly the whole penalty. Lighthouse points the remaining shift at the top-level `.app` container.
