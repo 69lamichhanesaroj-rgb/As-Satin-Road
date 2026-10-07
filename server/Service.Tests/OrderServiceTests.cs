@@ -20,7 +20,7 @@ public class OrderServiceTests
         var service = new OrderService(null!, new FixedRandom(50));
         var dto = new PlaceOrderRequest("buyer1","listing1", 0);
 
-        var warning = Assert.Throws<Exception>(() => service.PlaceOrder(dto));
+        var warning = Assert.Throws<ValidationException>(() => service.PlaceOrder(dto));
         Assert.Equal("Quantity must be greater than 0", warning.Message);
     }
 
@@ -29,7 +29,7 @@ public class OrderServiceTests
     {
         var service = new OrderService(null!, new FixedRandom(50));
         var dto = new PlaceOrderRequest("buyer1","listing1", -1);
-        var warning = Assert.Throws<Exception>(() => service.PlaceOrder(dto));
+        var warning = Assert.Throws<ValidationException>(() => service.PlaceOrder(dto));
         Assert.Equal("Quantity must be greater than 0", warning.Message);
     }
 
@@ -40,7 +40,7 @@ public class OrderServiceTests
         var service = new OrderService(db, new FixedRandom(50));
         var dto = new PlaceOrderRequest("buyer1", "nothing", 1);
 
-        var error = Assert.Throws<Exception>(() => service.PlaceOrder(dto));
+        var error = Assert.Throws<NotFoundException>(() => service.PlaceOrder(dto));
         Assert.Equal("Listing not found.", error.Message);
     }
 
@@ -53,7 +53,7 @@ public class OrderServiceTests
         var service = new OrderService(db, new FixedRandom(50));
         var dto = new PlaceOrderRequest("buyer1", "l1", 5);
 
-        var error = Assert.Throws<Exception>(() => service.PlaceOrder(dto));
+        var error = Assert.Throws<ValidationException>(() => service.PlaceOrder(dto));
         Assert.Equal("Not enough stock available.", error.Message);
     }
 

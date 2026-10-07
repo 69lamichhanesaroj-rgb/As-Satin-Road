@@ -49,17 +49,17 @@ public class ListingService
     {
         var vendor = _db.Users.FirstOrDefault(v => v.Id == dto.VendorId);
         if (vendor == null)
-            throw new Exception("Vendor not found");
+            throw new NotFoundException("Vendor not found");
 
         var category = _db.Categories.FirstOrDefault(c => c.CategoryId == dto.CategoryId);
         if (category == null)
-            throw new Exception("Category not found");
+            throw new NotFoundException("Category not found");
         
         if(vendor.IsShutDown)
-            throw new Exception("Vendor is shut down");
+            throw new ValidationException("Vendor is shut down");
 
         if(dto.Price <= 0)
-            throw new Exception("Price must be greater than zero");
+            throw new ValidationException("Price must be greater than zero");
 
         var listing = new Listing()
         {
@@ -85,13 +85,13 @@ public class ListingService
             .LoadWith(a => a.Vendor)
             .FirstOrDefault(l => l.ListingId == dto.ListingId);
         if (listing == null)
-            throw new Exception("Listing not found");
+            throw new NotFoundException("Listing not found");
 
         if (dto.Price <= 0)
-            throw new Exception("Price must be greater than zero");
+            throw new ValidationException("Price must be greater than zero");
 
         if (dto.StockQuantity < 0)
-            throw new Exception("Stock quantity can't be negative");
+            throw new ValidationException("Stock quantity can't be negative");
 
         _db.Listings
             .Where(a => a.ListingId == dto.ListingId)
@@ -111,7 +111,7 @@ public class ListingService
     {
         var listing = _db.Listings.FirstOrDefault(a => a.ListingId == listingId);
         if (listing == null)
-            throw new Exception("Listing not found");
+            throw new NotFoundException("Listing not found");
         
         _db.Listings.Where(a => a.ListingId == listingId).Delete();
     }

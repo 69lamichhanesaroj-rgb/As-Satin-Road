@@ -23,7 +23,7 @@ public class CategoryService
     public Category CreateCategory(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Category name cannot be empty.");
+            throw new ValidationException("Category name cannot be empty.");
 
         var id = _db.InsertWithInt32Identity(new Category { CategoryName = name });
         return new Category { CategoryId = id, CategoryName = name };
@@ -32,11 +32,11 @@ public class CategoryService
     public Category RenameCategory(RenameCategoryRequest dto)
     {
         if (string.IsNullOrWhiteSpace(dto.NewName))
-            throw new ArgumentException("Category name cannot be empty.");
+            throw new ValidationException("Category name cannot be empty.");
 
         var category = _db.Categories.FirstOrDefault(c => c.CategoryId == dto.CategoryId);
         if (category == null)
-            throw new Exception("Category not found");
+            throw new NotFoundException("Category not found");
 
         _db.Categories
             .Where(c => c.CategoryId == dto.CategoryId)
@@ -52,10 +52,10 @@ public class CategoryService
     {
         var category = _db.Categories.FirstOrDefault(c => c.CategoryId == categoryId);
         if (category == null)
-            throw new Exception("Category not found");
+            throw new NotFoundException("Category not found");
 
         if (_db.Listings.Any(l => l.CategoryId == categoryId))
-            throw new Exception("Category is still used by listings");
+            throw new ConflictException("Category is still used by listings");
 
         _db.Categories.Where(c => c.CategoryId == categoryId).Delete();
     }
