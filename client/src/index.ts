@@ -3,8 +3,9 @@ import index from "./index.html";
 
 const server = serve({
   routes: {
-    // Serve index.html for all unmatched routes.
-    // this makes /shop, /admin etc. load the React app too
+    "/robots.txt": new Response("User-agent: *\nAllow: /\n", {
+      headers: { "content-type": "text/plain" },
+    }),
     "/*": index,
   },
 
