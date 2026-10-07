@@ -5,7 +5,7 @@ School project by Asim, Saroj and Gabriela.
 
 Hard stories we built:
 - 20% discount when a buyer has more than 10 earlier orders from the same seller
-- sellers with more than 100 orders are featured on the home page
+- sellers with more than 100 orders are featured on the Shopping page
 - every purchase has a 1% chance that the buyer is the FBI, then the seller gets shut down
 
 ## Tech
@@ -26,8 +26,8 @@ client/
   src/components/ Modal and CategoryIcon
   src/api/Api.ts  generated, don't edit by hand
   src/apiClient.ts  the one "api" object every page uses
-  src/logo.svg    our logo, also the icon in the browser tab
-  src/logo-sr.svg the big logo (S and R) for the home banner and login
+  src/logo.svg    the S on a tile, only the icon in the browser tab
+  src/logo-sr.svg our logo (S and R), in the header, home banner, login and footer
 ```
 
 ## How to run
@@ -76,9 +76,9 @@ bun run generate:api
 ## Using the app
 
 1. Register. **The first user who registers is the admin**, everyone after is a normal user.
-2. As the admin, add some categories on the Admin page. Only the admin can add, rename or delete them.
-3. Log out, register a second user and add listings on My shop.
-4. Register a third user and buy something on the Home page. My orders shows what you bought.
+2. As the admin, click your letter in the top right and open Dashboard to add some categories. Only the admin can add, rename or delete them.
+3. Log out, register a second user and add listings on My shop (also in the menu under your letter).
+4. Register a third user and buy something on the Shopping page. My orders shows what you bought.
 
 To start over with an empty database, delete `dev.db` (with Docker: `docker compose down -v`).
 
