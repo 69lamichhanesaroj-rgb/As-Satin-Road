@@ -799,27 +799,24 @@ select:focus {
   gap: 0.5rem;
 }
 
-/* ---- my orders: summary chips + table ---- */
+/* ---- my orders: summary lines + table ---- */
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+.summary {
+  display: grid;
+  gap: 0.2rem;
   margin-bottom: 1rem;
 }
 
-.chip {
-  padding: 0.45rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-strong);
-  background: var(--surface-3);
-  font-size: 0.9rem;
+.summary p {
+  margin: 0;
   color: var(--muted);
 }
 
-.chip b {
-  color: var(--text);
+.summary b {
+  margin-left: 0.35rem;
+  color: var(--gold);
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 /* the table can scroll sideways on a phone instead of breaking the page */

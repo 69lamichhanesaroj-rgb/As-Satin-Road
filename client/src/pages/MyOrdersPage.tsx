@@ -67,10 +67,11 @@ export function MyOrdersPage() {
     return (
         <div>
             {head}
-            <div className="chips">
-                <span className="chip"><b>{orders.length}</b> orders</span>
-                <span className="chip"><b>{money(totalSpent)}</b> spent</span>
-                <span className="chip"><b>{discounted}</b> with 20% off</span>
+            {/* the summary: grey text, the number in gold */}
+            <div className="summary">
+                <p>Total money spent <b>{money(totalSpent)}</b></p>
+                <p>Total orders <b>{orders.length}</b></p>
+                <p>Orders with 20% off <b>{discounted}</b></p>
             </div>
             <div className="panel table-wrap">
                 <table className="table">
