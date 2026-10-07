@@ -23,8 +23,11 @@ server/
   Service.Tests/  the tests
 client/
   src/pages/      one file per page
+  src/components/ Modal and CategoryIcon
   src/api/Api.ts  generated, don't edit by hand
   src/apiClient.ts  the one "api" object every page uses
+  src/logo.svg    our logo, also the icon in the browser tab
+  src/logo-sr.svg the big logo (S and R) for the home banner and login
 ```
 
 ## How to run
@@ -69,6 +72,15 @@ Stop the API in Rider and `bun dev` first, they use the same ports.
 cd client
 bun run generate:api
 ```
+
+## Using the app
+
+1. Register. **The first user who registers is the admin**, everyone after is a normal user.
+2. As the admin, add some categories on the Admin page. Only the admin can add, rename or delete them.
+3. Log out, register a second user and add listings on My shop.
+4. Register a third user and buy something on the Home page. My orders shows what you bought.
+
+To start over with an empty database, delete `dev.db` (with Docker: `docker compose down -v`).
 
 ## Tests
 

@@ -6,7 +6,7 @@ import { Modal } from "../components/Modal";
 import { CategoryIcon } from "../components/CategoryIcon";
 import { getSavedUser } from "../user";
 import { money } from "../money";
-import logo from "../logo.svg";
+import logoSr from "../logo-sr.svg";
 
 // what the product modal shows after the Buy button is pressed
 type BuyResult = {
@@ -179,7 +179,7 @@ export function HomePage() {
                         </div>
                     </dl>
                 </div>
-                <img className="hero-logo" src={logo} alt="" />
+                <img className="hero-logo" src={logoSr} alt="" />
             </section>
 
             <div className="layout">
