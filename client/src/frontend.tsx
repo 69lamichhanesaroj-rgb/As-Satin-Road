@@ -10,6 +10,7 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { App } from "./App";
 import { HomePage } from "./pages/HomePage";
+import { ShoppingPage } from "./pages/ShoppingPage";
 import { MyShopPage } from "./pages/MyShopPage";
 import { MyOrdersPage } from "./pages/MyOrdersPage";
 import { AdminPage } from "./pages/AdminPage";
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: "shopping", element: <ShoppingPage /> },
       { path: "shop", element: <MyShopPage /> },
       { path: "orders", element: <MyOrdersPage /> },
       { path: "admin", element: <AdminPage /> },

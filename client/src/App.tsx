@@ -22,9 +22,9 @@ export function App() {
         return () => window.removeEventListener("keydown", onKey);
     }, []);
 
-    // the menu item for the page we're on gets the "active" class (gold)
-    function navClass(path: string) {
-        return location.pathname === path ? "user-menu-item active" : "user-menu-item";
+    // the link for the page we're on gets the "active" class (gold)
+    function navClass(base: string, path: string) {
+        return location.pathname === path ? base + " active" : base;
     }
 
     // go to a page and close the account menu
@@ -47,6 +47,8 @@ export function App() {
                     <span className="wordmark">SATIN ROAD</span>
                 </button>
                 <nav className="nav">
+                    {/* everyone can look around the market, logged in or not */}
+                    <button className={navClass('nav-link', '/shopping')} onClick={() => go('/shopping')}>Shopping</button>
                     {user ? (
                         <div className="account">
                             {/* the first letter of the username in a circle, opens the menu */}
@@ -68,11 +70,11 @@ export function App() {
                                             <span>{user.role}</span>
                                         </div>
                                         <div className="user-menu-links">
-                                            <button className={navClass('/shop')} onClick={() => go('/shop')}>My shop</button>
-                                            <button className={navClass('/orders')} onClick={() => go('/orders')}>My orders</button>
+                                            <button className={navClass('user-menu-item', '/shop')} onClick={() => go('/shop')}>My shop</button>
+                                            <button className={navClass('user-menu-item', '/orders')} onClick={() => go('/orders')}>My orders</button>
                                             {/* only the admin sees this link, the server checks the role too */}
                                             {user.role === "admin" && (
-                                                <button className={navClass('/admin')} onClick={() => go('/admin')}>Dashboard</button>
+                                                <button className={navClass('user-menu-item', '/admin')} onClick={() => go('/admin')}>Dashboard</button>
                                             )}
                                         </div>
                                         <button className="user-menu-item" onClick={handleLogout}>Log out</button>
