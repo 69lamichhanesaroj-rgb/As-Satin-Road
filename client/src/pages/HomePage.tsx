@@ -179,7 +179,9 @@ export function HomePage() {
                         </div>
                     </dl>
                 </div>
-                <img className="hero-logo" src={logoSr} alt="" />
+                {/* width/height reserve the space before the svg loads (kills a layout shift),
+                    fetchPriority because this is the LCP image. 250 wide = 206 tall (svg viewBox ratio) */}
+                <img className="hero-logo" src={logoSr} alt="" width={250} height={206} fetchPriority="high" />
             </section>
 
             <div className="layout">
