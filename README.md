@@ -13,6 +13,7 @@ Hard stories we built:
 - Backend: .NET 10, Linq2db, SQLite, Swagger (NSwag)
 - Frontend: Bun, React, React Router, a client generated with swagger-typescript-api
 - Tests: xUnit
+- Docker: `server/API/Dockerfile`, `client/Dockerfile`, and `docker-compose.yml` that starts both
 
 ```
 server/
@@ -49,6 +50,18 @@ bun dev
 ```
 
 App: http://localhost:3000
+
+**With Docker** (the whole app with one command, Docker Desktop has to run)
+
+```
+docker compose up --build
+```
+
+App: http://localhost:3000, API + Swagger: http://localhost:5000/swagger
+
+The API runs inside its container on port 8080, `docker-compose.yml` maps it to 5000 so the client works the same as in dev.
+The database is kept in a Docker volume, so it survives a restart. `docker compose down -v` deletes it.
+Stop the API in Rider and `bun dev` first, they use the same ports.
 
 **After changing an endpoint**, make the client again (the API has to run):
 
