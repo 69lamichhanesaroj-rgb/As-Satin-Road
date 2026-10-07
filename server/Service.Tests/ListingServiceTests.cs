@@ -12,7 +12,7 @@ public class ListingServiceTests
         var service = new ListingService(db);
         var dto = new CreateListingRequest("nobody", 1, "Knife", 10, 5);
 
-        var error = Assert.Throws<Exception>(() => service.CreateListing(dto));
+        var error = Assert.Throws<NotFoundException>(() => service.CreateListing(dto));
         Assert.Equal("Vendor not found", error.Message);
     }
 
@@ -25,7 +25,7 @@ public class ListingServiceTests
         var service = new ListingService(db);
         var dto = new CreateListingRequest("u1", 1, "Knife", 10, 5);
 
-        var error = Assert.Throws<Exception>(() => service.CreateListing(dto));
+        var error = Assert.Throws<ValidationException>(() => service.CreateListing(dto));
         Assert.Equal("Vendor is shut down", error.Message);
     }
 
@@ -38,7 +38,7 @@ public class ListingServiceTests
         var service = new ListingService(db);
         var dto = new CreateListingRequest("u1", 1, "Knife", 0, 5);
 
-        var error = Assert.Throws<Exception>(() => service.CreateListing(dto));
+        var error = Assert.Throws<ValidationException>(() => service.CreateListing(dto));
         Assert.Equal("Price must be greater than zero", error.Message);
     }
 

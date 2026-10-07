@@ -1,5 +1,4 @@
-﻿using API;
-using Infra.Entities;
+﻿using Infra.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 

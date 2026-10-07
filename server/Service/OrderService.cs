@@ -25,20 +25,20 @@ public class OrderService
     {
         //Quantity validation
         if (dto.Quantity <= 0)
-            throw new Exception("Quantity must be greater than 0");
+            throw new ValidationException("Quantity must be greater than 0");
 
         // fetch listing
         var listing = _db.Listings.FirstOrDefault(a => a.ListingId == dto.ListingId);
-        if (listing == null) throw new Exception("Listing not found.");
+        if (listing == null) throw new NotFoundException("Listing not found.");
 
         //fetch vendor & check shutdown status
         var vendor = _db.Users.FirstOrDefault(v => v.Id == listing.VendorId);
         if (vendor == null || vendor.IsShutDown)
-            throw new Exception("This vendor is shut down and no longer operational.");
+            throw new ValidationException("This vendor is shut down and no longer operational.");
 
         //stock availability check
         if (listing.StockQuantity < dto.Quantity)
-            throw new Exception("Not enough stock available.");
+            throw new ValidationException("Not enough stock available.");
         
         if(_rng.Next(1,101) == 1)
         {

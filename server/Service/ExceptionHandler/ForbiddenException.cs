@@ -1,4 +1,4 @@
-﻿namespace API;
+﻿namespace Service;
 
 public class ForbiddenException : Exception
 {
