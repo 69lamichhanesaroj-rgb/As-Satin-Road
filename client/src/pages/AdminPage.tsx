@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../apiClient";
 import type { Category } from "../api/Api";
+import { CategoryIcon } from "../components/CategoryIcon";
 import { getSavedUser } from "../user";
 
 export function AdminPage() {
@@ -28,10 +29,10 @@ export function AdminPage() {
 
     // only an admin sees the page, the backend checks it again on every call
     if (!user) {
-        return <p>log in first</p>;
+        return <p className="info">Log in first.</p>;
     }
     if (user.role !== "admin") {
-        return <p>admins only</p>;
+        return <p className="error">Admins only.</p>;
     }
     const userId = user.id;
 
@@ -69,17 +70,26 @@ export function AdminPage() {
     }
 
     return (
-        <div>
-            <h2>Admin: categories</h2>
-            <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="New category" />
-            <button onClick={addCategory}>Add</button>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <ul>
+        <div className="panel">
+            <p className="eyebrow">Admin</p>
+            <h2>Categories</h2>
+            <p className="subtitle">Add, rename or delete the categories sellers can pick.</p>
+            <div className="row">
+                <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="New category" />
+                <button className="btn btn-primary" onClick={addCategory}>Add</button>
+            </div>
+            {error && <p className="error">{error}</p>}
+            <ul className="list">
                 {categories.map(c =>
-                    <li key={c.categoryId}>
-                        {c.categoryName}
-                        <button onClick={() => renameCategory(c.categoryId!)}>Rename</button>
-                        <button onClick={() => deleteCategory(c.categoryId!)}>Delete</button>
+                    <li key={c.categoryId} className="list-item">
+                        <span className="list-name">
+                            <CategoryIcon id={c.categoryId ?? 0} name={c.categoryName ?? "?"} size={36} />
+                            {c.categoryName}
+                        </span>
+                        <div className="actions">
+                            <button className="btn" onClick={() => renameCategory(c.categoryId!)}>Rename</button>
+                            <button className="btn btn-danger" onClick={() => deleteCategory(c.categoryId!)}>Delete</button>
+                        </div>
                     </li>
                 )}
             </ul>
