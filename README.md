@@ -27,6 +27,7 @@ client/
   src/api/Api.ts  generated, don't edit by hand
   src/apiClient.ts  the one "api" object every page uses
   src/logo.svg    our logo, also the icon in the browser tab
+  src/logo-sr.svg the big logo (S and R) for the home banner and login
 ```
 
 ## How to run

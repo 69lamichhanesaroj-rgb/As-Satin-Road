@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { api } from "../apiClient";
-import logo from "../logo.svg";
+import logoSr from "../logo-sr.svg";
 
 export function LoginPage() {
     const [username, setUsername] = useState("");
@@ -37,7 +37,7 @@ export function LoginPage() {
     return (
         <div className="auth">
             <div className="panel">
-                <img className="auth-logo" src={logo} alt="" />
+                <img className="auth-logo" src={logoSr} alt="" />
                 <h2>Welcome back</h2>
                 <p className="subtitle">Log in, or make a new account.</p>
                 <label className="field">
