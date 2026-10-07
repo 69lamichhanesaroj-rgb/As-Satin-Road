@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../apiClient";
 import type { Category } from "../api/Api";
-
-function getSavedUser(): { id: string; username: string; role: string } | null {
-    try {
-        const raw = localStorage.getItem("user");
-        return raw ? JSON.parse(raw) : null;
-    } catch {
-        return null;
-    }
-}
+import { getSavedUser } from "../user";
 
 export function AdminPage() {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -18,31 +10,13 @@ export function AdminPage() {
 
     const user = getSavedUser();
 
-    // TODO #14 frontend guard: only admin sees the page
-    if (!user) {
-        return <p>log in first</p>;
-    }
-    if (user.role !== "admin") {
-        return <p>admins only</p>;
-    }
-
-    return <AdminInner userId={user.id} categories={categories} setCategories={setCategories} newName={newName} setNewName={setNewName} error={error} setError={setError} />;
-}
-
-// inner component so hooks run unconditionally after the guard above
-function AdminInner({ userId, categories, setCategories, newName, setNewName, error, setError }: {
-    userId: string;
-    categories: Category[];
-    setCategories: (c: Category[]) => void;
-    newName: string;
-    setNewName: (s: string) => void;
-    error: string;
-    setError: (s: string) => void;
-}) {
+    // get the list from the backend and keep it in state
     function loadCategories() {
         api.api.categoryGetCategories().then(r => setCategories(r)).catch(showError);
     }
 
+    // load once when the page opens
+    // hooks always have to run, so this comes before the "admins only" check below
     useEffect(() => {
         loadCategories();
     }, []);
@@ -51,6 +25,15 @@ function AdminInner({ userId, categories, setCategories, newName, setNewName, er
     function showError(e: any) {
         setError(e.error?.detail ?? "Something went wrong");
     }
+
+    // only an admin sees the page, the backend checks it again on every call
+    if (!user) {
+        return <p>log in first</p>;
+    }
+    if (user.role !== "admin") {
+        return <p>admins only</p>;
+    }
+    const userId = user.id;
 
     async function addCategory() {
         try {

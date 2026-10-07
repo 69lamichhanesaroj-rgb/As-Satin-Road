@@ -57,10 +57,12 @@ public class OrderServiceTests
         Assert.Equal("Not enough stock available.", error.Message);
     }
 
+    // 20% off after MORE than 10 earlier orders from the same vendor
+    // InlineData = price, quantity, earlier orders, expected total
     [Theory]
-    [InlineData(100, 1, 10, 100)]
-    [InlineData(100, 1, 11, 80)]
-    [InlineData(50, 2, 0, 100)]
+    [InlineData(100, 1, 10, 100)]   // exactly 10 -> no discount yet
+    [InlineData(100, 1, 11, 80)]    // 11 -> 20% off
+    [InlineData(50, 2, 0, 100)]     // first order -> price x quantity
     public void CalculateTotalPrice_Discount(int price, int quantity, int earlierOrders, int expected)
     {
         var service = new OrderService(null!, new FixedRandom(50));

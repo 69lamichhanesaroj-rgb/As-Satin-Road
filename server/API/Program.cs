@@ -23,23 +23,6 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IPasswordHasher, Argon2PasswordHasher>();
 builder.Services.AddSingleton<IRandomNumberGenerator, RealRandomNumberGenerator>();
 
-
-/*
- * TODO #10 (Saroj)
- * Global exception handler, 2 lines here:
- * one that turns on ProblemDetails, one that registers your exception handler class.
- * Make the class in a new file API/GlobalExceptionHandler.cs:
- *   it catches every exception thrown in a controller or service
- *   and sends back JSON with status 400 and the exception message (ProblemDetails).
- * Also add app.UseExceptionHandler() further down (see the TODO above MapControllers).
- *
- * Why: right now when a service throws (like "Listing not found") the client
- * only gets an empty 500 error. With this the frontend can show the real message.
- */
-
-
-
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApiDocument();
 builder.Services.AddControllers();
@@ -79,12 +62,6 @@ app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().
 
 app.UseOpenApi();
 app.UseSwaggerUi();
-
-/*
- * TODO #10 (Saroj)
- * Add app.UseExceptionHandler() here (1 line), so the handler from above is actually used.
- */
-
 
 app.UseAuthorization();
 app.MapControllers();

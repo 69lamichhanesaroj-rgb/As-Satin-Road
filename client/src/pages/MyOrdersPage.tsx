@@ -1,49 +1,26 @@
 import { useEffect, useState } from "react";
 import { api } from "../apiClient";
-
-type BuyerOrder = {
-    orderId?: string;
-    listingId?: string;
-    listingTitle?: string;
-    quantity?: number;
-    totalPrice?: number;
-    isDiscountApplied?: boolean;
-    orderDate?: string;
-};
-
-function getSavedUser(): { id: string; username: string; role: string } | null {
-    try {
-        const raw = localStorage.getItem("user");
-        return raw ? JSON.parse(raw) : null;
-    } catch {
-        return null;
-    }
-}
+import type { BuyerOrderDto } from "../api/Api";
+import { getSavedUser } from "../user";
 
 export function MyOrdersPage() {
-    const [orders, setOrders] = useState<BuyerOrder[]>([]);
+    const [orders, setOrders] = useState<BuyerOrderDto[]>([]);
     const [error, setError] = useState("");
 
     const user = getSavedUser();
+
+    // load my orders once when the page opens
+    // hooks always have to run, so this comes before the "log in first" check below
+    useEffect(() => {
+        if (!user) return;
+        api.api.orderGetOrdersByBuyer({ buyerId: user.id })
+            .then(r => setOrders(r))
+            .catch((e: any) => setError(e.error?.detail ?? "Could not load orders"));
+    }, []);
+
     if (!user) {
         return <p>log in first</p>;
     }
-
-    return <MyOrdersInner buyerId={user.id} orders={orders} setOrders={setOrders} error={error} setError={setError} />;
-}
-
-function MyOrdersInner({ buyerId, orders, setOrders, error, setError }: {
-    buyerId: string;
-    orders: BuyerOrder[];
-    setOrders: (o: BuyerOrder[]) => void;
-    error: string;
-    setError: (s: string) => void;
-}) {
-    useEffect(() => {
-        api.api.orderGetOrdersByBuyer({ buyerId })
-            .then(r => setOrders(r))
-            .catch((e: any) => setError(e.error?.detail ?? "Could not load orders"));
-    }, [buyerId]);
 
     if (error) {
         return <p style={{ color: "red" }}>{error}</p>;
