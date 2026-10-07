@@ -4,6 +4,7 @@ import { api } from "../apiClient";
 import type { Category, ListingDto } from "../api/Api";
 import { Modal } from "../components/Modal";
 import { CategoryIcon } from "../components/CategoryIcon";
+import { Empty } from "../components/Empty";
 import { getSavedUser } from "../user";
 import { money } from "../money";
 
@@ -138,13 +139,15 @@ export function MyShopPage() {
 
     if (!user) {
         return (
-            <div className="panel">
-                <p className="eyebrow">Sell on Satin Road</p>
-                <h2>My shop</h2>
-                <p className="subtitle">Log in first to see your shop.</p>
-                <button className="btn btn-primary" onClick={() => navigate("/login")}>
-                    Log in
-                </button>
+            <div>
+                <div className="page-head">
+                    <h2>My shop</h2>
+                </div>
+                <Empty text="Log in first to see your shop.">
+                    <button className="btn btn-primary" onClick={() => navigate("/login")}>
+                        Log in
+                    </button>
+                </Empty>
             </div>
         );
     }
@@ -152,12 +155,8 @@ export function MyShopPage() {
     return (
         <div>
             <div className="page-head">
-                <div>
-                    <p className="eyebrow">Sell on Satin Road</p>
-                    <h2>My shop</h2>
-                    <p className="subtitle">Click a listing to change the price or stock.</p>
-                </div>
-                <button className="btn btn-primary btn-lg" onClick={openCreate}>
+                <h2>My shop</h2>
+                <button className="btn btn-primary" onClick={openCreate}>
                     + New listing
                 </button>
             </div>
@@ -165,7 +164,11 @@ export function MyShopPage() {
             {error && <p className="error">{error}</p>}
 
             {listings.length === 0 ? (
-                <p className="info">You have no listings yet. Press "New listing" to sell your first product.</p>
+                <Empty text="Your shop is empty.">
+                    <button className="btn btn-primary" onClick={openCreate}>
+                        + New listing
+                    </button>
+                </Empty>
             ) : (
                 <div className="grid">
                     {listings.map((l) => (

@@ -5,6 +5,7 @@ import type { ListingDto, UserDto } from "../api/Api";
 import type { ShopSearch } from "../App";
 import { Modal } from "../components/Modal";
 import { CategoryIcon } from "../components/CategoryIcon";
+import { Empty } from "../components/Empty";
 import { getSavedUser } from "../user";
 import { money } from "../money";
 
@@ -119,16 +120,16 @@ export function ShoppingPage() {
     return (
         <div>
             <div className="page-head">
-                <div>
-                    <p className="eyebrow">The market</p>
-                    <h2>Shopping</h2>
-                </div>
+                <h2>Shopping</h2>
             </div>
 
             {error && <p className="error">{error}</p>}
 
-            {visible.length === 0 ? (
-                <p className="info">No listings.</p>
+            {/* nothing for sale at all, or the search in the header hides everything */}
+            {listings.length === 0 ? (
+                <Empty text="Nothing for sale right now." />
+            ) : visible.length === 0 ? (
+                <Empty text="Nothing matches your search." />
             ) : (
                 <div className="grid">
                     {visible.map((l) => (
