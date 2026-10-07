@@ -37,9 +37,13 @@ export function App() {
         return () => window.removeEventListener("keydown", onKey);
     }, []);
 
-    // load the category names again on every page change,
+    // the search is only in the header on the Shopping page
+    const onShoppingPage = location.pathname === "/shopping";
+
+    // load the category names every time the Shopping page opens,
     // so a category the admin just added shows up in the dropdown
     useEffect(() => {
+        if (location.pathname !== "/shopping") return;
         async function loadCategories() {
             try {
                 setCategories(await api.api.categoryGetCategories());
@@ -61,11 +65,6 @@ export function App() {
         navigate(path);
     }
 
-    // the search results are on the Shopping page, go there if we're somewhere else
-    function showResults() {
-        if (location.pathname !== "/shopping") go("/shopping");
-    }
-
     function handleLogout() {
         localStorage.removeItem("user");
         go("/login");
@@ -79,38 +78,35 @@ export function App() {
                     <img className="brand-mark" src={logoSr} alt="" />
                     <span className="wordmark">SATIN ROAD</span>
                 </button>
-                {/* category + search, on every page. Go (or Enter) shows the results on the Shopping page */}
-                <form
-                    className="header-search"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        showResults();
-                    }}
-                >
-                    <select
-                        aria-label="Category"
-                        value={category ?? ""}
-                        onChange={(e) => {
-                            setCategory(e.target.value === "" ? null : Number(e.target.value));
-                            showResults();
-                        }}
-                    >
-                        <option value="">All categories</option>
-                        {categories.map((c) => (
-                            <option key={c.categoryId} value={c.categoryId}>
-                                {c.categoryName}
-                            </option>
-                        ))}
-                    </select>
-                    <input
-                        aria-label="Search listings"
-                        placeholder="Search..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                    />
-                    <button className="btn btn-primary" type="submit">Go</button>
-                </form>
+                {/* category + search, only on the Shopping page. The list filters while you type */}
+                {onShoppingPage && (
+                    <form className="header-search" onSubmit={(e) => e.preventDefault()}>
+                        <select
+                            aria-label="Category"
+                            value={category ?? ""}
+                            onChange={(e) => setCategory(e.target.value === "" ? null : Number(e.target.value))}
+                        >
+                            <option value="">All categories</option>
+                            {categories.map((c) => (
+                                <option key={c.categoryId} value={c.categoryId}>
+                                    {c.categoryName}
+                                </option>
+                            ))}
+                        </select>
+                        <input
+                            aria-label="Search listings"
+                            placeholder="Search..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                        <button className="btn btn-primary" type="submit">Go</button>
+                    </form>
+                )}
                 <nav className="nav">
+                    {/* the way to the shop from the other pages (Home has its own Start shopping button) */}
+                    {location.pathname !== '/' && !onShoppingPage && (
+                        <button className="btn" onClick={() => go('/shopping')}>Shopping</button>
+                    )}
                     {user ? (
                         <div className="account">
                             {/* the first letter of the username in a circle, opens the menu */}

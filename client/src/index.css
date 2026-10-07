@@ -193,10 +193,21 @@ h3 {
   gap: 0.5rem;
 }
 
-/* a bit lower than the normal inputs, so they line up with the buttons */
+/* everything in the header is 36px high, so the search, Go, Shopping, Log in and the circle line up */
+.header-search select,
+.header-search input,
+.header .btn {
+  height: 36px;
+  padding-block: 0;
+}
+
 .header-search select,
 .header-search input {
-  padding-block: 0.55rem;
+  font-size: 0.92rem;
+}
+
+.header .btn {
+  font-size: 0.88rem;
 }
 
 .header-search select {
@@ -216,8 +227,8 @@ h3 {
 }
 
 .avatar {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   display: grid;
   place-items: center;
   font: inherit;
@@ -404,6 +415,17 @@ select {
 
 input::placeholder {
   color: var(--faint);
+}
+
+/* our own small gold arrow for every dropdown, the browser's grey one doesn't fit the dark look */
+select {
+  appearance: none;
+  padding-right: 2.4rem;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1.5 1.5 6 6l4.5-4.5' fill='none' stroke='%23e6b04a' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      no-repeat right 0.9rem center / 12px 8px,
+    var(--surface-2);
+  cursor: pointer;
 }
 
 input:focus,
@@ -1044,7 +1066,13 @@ select:focus {
   }
 
   .header-search select {
-    width: 10rem;
+    width: 10.5rem;
+  }
+
+  /* 16px text on phones: smaller text makes iPhones zoom in when you tap the box */
+  .header-search select,
+  .header-search input {
+    font-size: 1rem;
   }
 
   .grid {
