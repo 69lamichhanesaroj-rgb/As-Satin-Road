@@ -23,12 +23,12 @@ export function App() {
     return (
         <div className="app">
             <header className="header">
-                <h1 className="brand" onClick={() => navigate('/')}>
+                {/* the logo is the home link */}
+                <button className="brand" onClick={() => navigate('/')}>
                     <img className="brand-mark" src={logo} alt="" />
                     <span className="wordmark">SATIN ROAD</span>
-                </h1>
+                </button>
                 <nav className="nav">
-                    <button className={navClass('/')} onClick={() => navigate('/')}>Home</button>
                     <button className={navClass('/shop')} onClick={() => navigate('/shop')}>My shop</button>
                     <button className={navClass('/orders')} onClick={() => navigate('/orders')}>My orders</button>
                     <button className={navClass('/admin')} onClick={() => navigate('/admin')}>Admin</button>
@@ -42,10 +42,13 @@ export function App() {
                     )}
                 </nav>
             </header>
-            {/* key = the page path, so the fade in plays again on every new page */}
-            <main className="page" key={location.pathname}>
-                <Outlet />
-            </main>
+            {/* only this part scrolls, the header and footer stay on the screen.
+                key = the page path, so every new page starts at the top and fades in again */}
+            <div className="scroll" key={location.pathname}>
+                <main className="page">
+                    <Outlet />
+                </main>
+            </div>
             <footer className="footer">
                 <img src={logo} alt="" />
                 Satin Road is a school project. Nothing here is real or for sale.

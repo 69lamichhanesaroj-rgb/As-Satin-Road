@@ -143,15 +143,10 @@ export function HomePage() {
         <div>
             <section className="hero">
                 <div className="hero-text">
-                    <p className="hero-badge">Open 24/7 · 1% FBI risk</p>
                     <h2 className="hero-title">
                         The finest goods.<br />
                         <em className="sheen">No questions asked.</em>
                     </h2>
-                    <p className="hero-sub">
-                        Buy from sellers you can almost trust. Order more than 10 times from the same seller
-                        and you get 20% off.
-                    </p>
                     <div className="hero-actions">
                         {/* scrolls down to the listings */}
                         <button
@@ -366,6 +361,14 @@ export function HomePage() {
                                     </button>
                                 </div>
                             </div>
+                        )}
+
+                        {/* the discount rule, as a small hint under the Buy button */}
+                        {result === null && (
+                            <p className="tip">
+                                <span className="tip-icon" aria-hidden="true">i</span>
+                                Order more than 10 times from the same seller and you get 20% off.
+                            </p>
                         )}
                 </Modal>
             )}
