@@ -1,7 +1,7 @@
 import "./index.css";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { getSavedUser } from "./user";
-import logo from "./logo.svg";
+import logoSr from "./logo-sr.svg";
 
 export function App() {
     const navigate = useNavigate();
@@ -25,7 +25,7 @@ export function App() {
             <header className="header">
                 {/* the logo is the home link */}
                 <button className="brand" onClick={() => navigate('/')}>
-                    <img className="brand-mark" src={logo} alt="" />
+                    <img className="brand-mark" src={logoSr} alt="" />
                     <span className="wordmark">SATIN ROAD</span>
                 </button>
                 <nav className="nav">
@@ -50,7 +50,7 @@ export function App() {
                 </main>
             </div>
             <footer className="footer">
-                <img src={logo} alt="" />
+                <img src={logoSr} alt="" />
                 Satin Road is a school project. Nothing here is real or for sale.
             </footer>
         </div>

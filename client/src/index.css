@@ -150,10 +150,14 @@ h3 {
   cursor: pointer;
 }
 
+/* the horns make the picture taller at the top, so it moves up a little
+   to put the middle of the letters in line with the text */
 .brand-mark {
   display: block;
-  width: 38px;
-  height: 38px;
+  position: relative;
+  top: -3px;
+  width: auto;
+  height: 25px;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
 }
 
@@ -231,8 +235,10 @@ h3 {
 }
 
 .footer img {
-  width: 20px;
-  height: 20px;
+  position: relative;
+  top: -2px;
+  width: auto;
+  height: 16px;
   opacity: 0.8;
 }
 

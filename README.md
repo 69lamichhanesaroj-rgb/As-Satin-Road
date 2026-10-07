@@ -26,8 +26,8 @@ client/
   src/components/ Modal and CategoryIcon
   src/api/Api.ts  generated, don't edit by hand
   src/apiClient.ts  the one "api" object every page uses
-  src/logo.svg    our logo, also the icon in the browser tab
-  src/logo-sr.svg the big logo (S and R) for the home banner and login
+  src/logo.svg    the S on a tile, only the icon in the browser tab
+  src/logo-sr.svg our logo (S and R), in the header, home banner, login and footer
 ```
 
 ## How to run
