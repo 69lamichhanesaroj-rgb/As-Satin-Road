@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../apiClient";
 import type { BuyerOrderDto } from "../api/Api";
 import { getSavedUser } from "../user";
+import { money } from "../money";
 
 export function MyOrdersPage() {
     const [orders, setOrders] = useState<BuyerOrderDto[]>([]);
@@ -19,28 +20,54 @@ export function MyOrdersPage() {
     }, []);
 
     if (!user) {
-        return <p>log in first</p>;
+        return <p className="info">Log in first.</p>;
     }
 
     if (error) {
-        return <p style={{ color: "red" }}>{error}</p>;
+        return <p className="error">{error}</p>;
     }
 
     if (orders.length === 0) {
-        return <p>no orders yet</p>;
+        return <p className="info">No orders yet. Go to Home and buy something.</p>;
     }
 
+    // the numbers for the small summary above the table
+    const totalSpent = orders.reduce((sum, o) => sum + (o.totalPrice ?? 0), 0);
+    const discounted = orders.filter(o => o.isDiscountApplied).length;
+
     return (
-        <div>
+        <div className="panel">
+            <p className="eyebrow">Your purchases</p>
             <h2>My orders</h2>
-            <ul>
-                {orders.map(o => (
-                    <li key={o.orderId}>
-                        {new Date(o.orderDate ?? "").toLocaleString()} — {o.listingTitle} × {o.quantity} — ${o.totalPrice}
-                        {o.isDiscountApplied && <span> 20% off</span>}
-                    </li>
-                ))}
-            </ul>
+            <div className="chips">
+                <span className="chip"><b>{orders.length}</b> orders</span>
+                <span className="chip"><b>{money(totalSpent)}</b> spent</span>
+                <span className="chip"><b>{discounted}</b> with 20% off</span>
+            </div>
+            <div className="table-wrap">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders.map(o => (
+                            <tr key={o.orderId}>
+                                <td>{new Date(o.orderDate ?? "").toLocaleDateString()}</td>
+                                <td>{o.listingTitle}</td>
+                                <td>{o.quantity}</td>
+                                <td className="price">{money(o.totalPrice)}</td>
+                                <td>{o.isDiscountApplied && <span className="badge">20% off</span>}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

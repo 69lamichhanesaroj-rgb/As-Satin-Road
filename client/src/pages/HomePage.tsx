@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { api } from "../apiClient";
 import type { Category, ListingDto, UserDto } from "../api/Api";
 import { Modal } from "../components/Modal";
+import { CategoryIcon } from "../components/CategoryIcon";
 import { getSavedUser } from "../user";
+import { money } from "../money";
+import logo from "../logo.svg";
 
 // what the product modal shows after the Buy button is pressed
 type BuyResult = {
@@ -28,6 +32,7 @@ export function HomePage() {
     const [result, setResult] = useState<BuyResult | null>(null);
 
     const user = getSavedUser();
+    const navigate = useNavigate();
 
     async function load() {
         try {
@@ -136,6 +141,47 @@ export function HomePage() {
 
     return (
         <div>
+            <section className="hero">
+                <div className="hero-text">
+                    <p className="hero-badge">Open 24/7 · 1% FBI risk</p>
+                    <h2 className="hero-title">
+                        The finest goods.<br />
+                        <em className="sheen">No questions asked.</em>
+                    </h2>
+                    <p className="hero-sub">
+                        Buy from sellers you can almost trust. Order more than 10 times from the same seller
+                        and you get 20% off.
+                    </p>
+                    <div className="hero-actions">
+                        {/* scrolls down to the listings */}
+                        <button
+                            className="btn btn-primary btn-lg"
+                            onClick={() => document.getElementById("listings")?.scrollIntoView({ behavior: "smooth" })}
+                        >
+                            Browse listings
+                        </button>
+                        <button className="btn btn-lg" onClick={() => navigate("/shop")}>
+                            Open your shop
+                        </button>
+                    </div>
+                    <dl className="hero-stats">
+                        <div>
+                            <dt>Listings</dt>
+                            <dd>{listings.length}</dd>
+                        </div>
+                        <div>
+                            <dt>Categories</dt>
+                            <dd>{categories.length}</dd>
+                        </div>
+                        <div>
+                            <dt>Featured sellers</dt>
+                            <dd>{featured.length}</dd>
+                        </div>
+                    </dl>
+                </div>
+                <img className="hero-logo" src={logo} alt="" />
+            </section>
+
             <div className="layout">
                 <aside className="sidebar">
                     <h3 className="side-title">Shop by Category</h3>
@@ -160,7 +206,7 @@ export function HomePage() {
                     </ul>
                 </aside>
 
-                <section className="content">
+                <section className="content" id="listings">
                     <form className="search" onSubmit={(e) => e.preventDefault()}>
                         <label htmlFor="search">Search</label>
                         <input
@@ -226,13 +272,23 @@ export function HomePage() {
                                         }
                                     }}
                                 >
-                                    {isFeatured(l) && <span className="badge">★ Featured seller</span>}
-                                    <h3 className="card-title">{l.title}</h3>
-                                    <p className="price">${Number(l.price ?? 0).toFixed(2)}</p>
-                                    <p className="meta">Stock: {l.stockQuantity}</p>
-                                    <p className="meta">
-                                        {l.categoryName} · Seller: {l.vendorName}
-                                    </p>
+                                    {/* the category's icon instead of a picture */}
+                                    <div className="card-top">
+                                        {isFeatured(l) && <span className="badge">★ Featured seller</span>}
+                                        <CategoryIcon id={l.categoryId ?? 0} name={l.categoryName ?? "?"} size={64} />
+                                    </div>
+                                    <div className="card-body">
+                                        <h3 className="card-title">{l.title}</h3>
+                                        <p className="meta">
+                                            {l.categoryName} · {l.vendorName}
+                                        </p>
+                                    </div>
+                                    <div className="card-foot">
+                                        <span className="price">{money(l.price)}</span>
+                                        <span className={l.stockQuantity === 0 ? "stock out" : "stock"}>
+                                            {l.stockQuantity} in stock
+                                        </span>
+                                    </div>
                                 </article>
                             ))}
                         </div>
@@ -242,10 +298,13 @@ export function HomePage() {
 
             {selected && (
                 <Modal label={selected.title ?? "Product"} onClose={closeModal}>
+                    <div className="modal-icon">
+                        <CategoryIcon id={selected.categoryId ?? 0} name={selected.categoryName ?? "?"} size={56} />
+                    </div>
                     {isFeatured(selected) && <span className="badge">★ Featured seller</span>}
                         <h3 className="card-title">{selected.title}</h3>
-                        <p className="price">${Number(selected.price ?? 0).toFixed(2)}</p>
-                        <p className="meta">Stock: {selected.stockQuantity}</p>
+                        <p className="price">{money(selected.price)}</p>
+                        <p className="meta">{selected.stockQuantity} in stock</p>
                         <p className="meta">
                             {selected.categoryName} · Seller: {selected.vendorName}
                         </p>
@@ -280,7 +339,7 @@ export function HomePage() {
                                 </div>
                             ) : (
                                 <div className="buy-row">
-                                    <button className="btn" disabled>
+                                    <button className="btn btn-primary" onClick={() => navigate("/login")}>
                                         Log in to buy
                                     </button>
                                 </div>
@@ -298,7 +357,7 @@ export function HomePage() {
                                 >
                                     {result.message}
                                     {result.total != null && (
-                                        <> Total: ${Number(result.total).toFixed(2)}</>
+                                        <> Total: {money(result.total)}</>
                                     )}
                                 </p>
                                 <div className="buy-row">

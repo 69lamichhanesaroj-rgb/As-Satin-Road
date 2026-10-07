@@ -3,7 +3,9 @@ import { useNavigate } from "react-router";
 import { api } from "../apiClient";
 import type { Category, ListingDto } from "../api/Api";
 import { Modal } from "../components/Modal";
+import { CategoryIcon } from "../components/CategoryIcon";
 import { getSavedUser } from "../user";
+import { money } from "../money";
 
 // The modal is either closed, creating a new listing, or editing an existing one.
 type ShopModal = { mode: "create" } | { mode: "edit"; listing: ListingDto } | null;
@@ -136,9 +138,10 @@ export function MyShopPage() {
 
     if (!user) {
         return (
-            <div>
+            <div className="panel">
+                <p className="eyebrow">Sell on Satin Road</p>
                 <h2>My shop</h2>
-                <p className="info">Log in first to see your shop.</p>
+                <p className="subtitle">Log in first to see your shop.</p>
                 <button className="btn btn-primary" onClick={() => navigate("/login")}>
                     Log in
                 </button>
@@ -148,17 +151,21 @@ export function MyShopPage() {
 
     return (
         <div>
-            <h2>My shop</h2>
-            <p>
-                <button className="btn btn-primary" onClick={openCreate}>
-                    New listing
+            <div className="page-head">
+                <div>
+                    <p className="eyebrow">Sell on Satin Road</p>
+                    <h2>My shop</h2>
+                    <p className="subtitle">Click a listing to change the price or stock.</p>
+                </div>
+                <button className="btn btn-primary btn-lg" onClick={openCreate}>
+                    + New listing
                 </button>
-            </p>
+            </div>
 
             {error && <p className="error">{error}</p>}
 
             {listings.length === 0 ? (
-                <p className="info">You have no listings yet.</p>
+                <p className="info">You have no listings yet. Press "New listing" to sell your first product.</p>
             ) : (
                 <div className="grid">
                     {listings.map((l) => (
@@ -175,10 +182,19 @@ export function MyShopPage() {
                                 }
                             }}
                         >
-                            <h3 className="card-title">{l.title}</h3>
-                            <p className="price">${Number(l.price ?? 0).toFixed(2)}</p>
-                            <p className="meta">Stock: {l.stockQuantity}</p>
-                            <p className="meta">{l.categoryName}</p>
+                            <div className="card-top">
+                                <CategoryIcon id={l.categoryId ?? 0} name={l.categoryName ?? "?"} size={64} />
+                            </div>
+                            <div className="card-body">
+                                <h3 className="card-title">{l.title}</h3>
+                                <p className="meta">{l.categoryName}</p>
+                            </div>
+                            <div className="card-foot">
+                                <span className="price">{money(l.price)}</span>
+                                <span className={l.stockQuantity === 0 ? "stock out" : "stock"}>
+                                    {l.stockQuantity} in stock
+                                </span>
+                            </div>
                         </article>
                     ))}
                 </div>

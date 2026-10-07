@@ -14,6 +14,7 @@ import { MyShopPage } from "./pages/MyShopPage";
 import { MyOrdersPage } from "./pages/MyOrdersPage";
 import { AdminPage } from "./pages/AdminPage";
 import { LoginPage } from "./pages/LoginPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
 // App is the parent (title + nav), the pages are its children and show in its <Outlet />
 // index: true = the page for "/" itself
@@ -27,6 +28,8 @@ const router = createBrowserRouter([
       { path: "orders", element: <MyOrdersPage /> },
       { path: "admin", element: <AdminPage /> },
       { path: "login", element: <LoginPage /> },
+      // every other address
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
 ]);
