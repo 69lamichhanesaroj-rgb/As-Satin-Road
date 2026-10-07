@@ -95,7 +95,8 @@ Each test is arrange (put data in) -> act (call the method) -> assert (check the
 | 20% discount | 10 orders full price, 11 orders 20% off, first order |
 | Featured sellers | 100 is not featured, 101 is, shut down sellers are never featured |
 | Create listing | unknown seller, shut down seller, price 0, valid listing has category + seller name |
-| Place order | quantity 0 or negative, listing not found, not enough stock |
+| Place order | quantity 0 or negative, listing not found, not enough stock, buying your own listing |
+| FBI raid | random 1 -> seller shut down and listings gone, random 50 -> normal order |
 
 **Test database:** tests that need the database use `TestDatabase.Create()`. It makes a fresh in-memory
 SQLite database for every test, so tests don't affect each other or `dev.db`.

@@ -36,6 +36,10 @@ public class OrderService
         if (vendor == null || vendor.IsShutDown)
             throw new ValidationException("This vendor is shut down and no longer operational.");
 
+        // a seller can't buy their own listing
+        if (dto.BuyerId == vendor.Id)
+            throw new ValidationException("You can't buy your own listing");
+
         //stock availability check
         if (listing.StockQuantity < dto.Quantity)
             throw new ValidationException("Not enough stock available.");
