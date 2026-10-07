@@ -1,8 +1,17 @@
 import "./index.css";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
+import { api } from "./apiClient";
+import type { Category } from "./api/Api";
 import { getSavedUser } from "./user";
 import logoSr from "./logo-sr.svg";
+
+// what App gives to the page inside the <Outlet />: the search from the header.
+// the Shopping page reads it with useOutletContext()
+export type ShopSearch = {
+    query: string;
+    category: number | null; // null = all categories
+};
 
 export function App() {
     const navigate = useNavigate();
@@ -13,6 +22,12 @@ export function App() {
     // is the account menu (under the round letter button) open?
     const [menuOpen, setMenuOpen] = useState(false);
 
+    // the search in the header: the text, the chosen category and the names for the dropdown
+    const [query, setQuery] = useState("");
+    const [category, setCategory] = useState<number | null>(null);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const search: ShopSearch = { query, category };
+
     // Escape closes the account menu, the same way it closes the product window
     useEffect(() => {
         function onKey(e: KeyboardEvent) {
@@ -21,6 +36,19 @@ export function App() {
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
     }, []);
+
+    // load the category names again on every page change,
+    // so a category the admin just added shows up in the dropdown
+    useEffect(() => {
+        async function loadCategories() {
+            try {
+                setCategories(await api.api.categoryGetCategories());
+            } catch {
+                setCategories([]); // the dropdown only has "All categories", the search still works
+            }
+        }
+        loadCategories();
+    }, [location.pathname]);
 
     // the menu item for the page we're on gets the "active" class (gold)
     function navClass(path: string) {
@@ -31,6 +59,11 @@ export function App() {
     function go(path: string) {
         setMenuOpen(false);
         navigate(path);
+    }
+
+    // the search results are on the Shopping page, go there if we're somewhere else
+    function showResults() {
+        if (location.pathname !== "/shopping") go("/shopping");
     }
 
     function handleLogout() {
@@ -46,12 +79,38 @@ export function App() {
                     <img className="brand-mark" src={logoSr} alt="" />
                     <span className="wordmark">SATIN ROAD</span>
                 </button>
+                {/* category + search, on every page. Go (or Enter) shows the results on the Shopping page */}
+                <form
+                    className="header-search"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        showResults();
+                    }}
+                >
+                    <select
+                        aria-label="Category"
+                        value={category ?? ""}
+                        onChange={(e) => {
+                            setCategory(e.target.value === "" ? null : Number(e.target.value));
+                            showResults();
+                        }}
+                    >
+                        <option value="">All categories</option>
+                        {categories.map((c) => (
+                            <option key={c.categoryId} value={c.categoryId}>
+                                {c.categoryName}
+                            </option>
+                        ))}
+                    </select>
+                    <input
+                        aria-label="Search listings"
+                        placeholder="Search..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                    />
+                    <button className="btn btn-primary" type="submit">Go</button>
+                </form>
                 <nav className="nav">
-                    {/* everyone can look around the market, logged in or not.
-                        hidden on Home (it has the Start shopping button) and on the Shopping page itself */}
-                    {location.pathname !== '/' && location.pathname !== '/shopping' && (
-                        <button className="btn" onClick={() => go('/shopping')}>Shopping</button>
-                    )}
                     {user ? (
                         <div className="account">
                             {/* the first letter of the username in a circle, opens the menu */}
@@ -94,7 +153,8 @@ export function App() {
                 key = the page path, so every new page starts at the top and fades in again */}
             <div className="scroll" key={location.pathname}>
                 <main className="page">
-                    <Outlet />
+                    {/* the page inside gets the search from the header (only the Shopping page uses it) */}
+                    <Outlet context={search} />
                 </main>
             </div>
             <footer className="footer">

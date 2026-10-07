@@ -184,6 +184,31 @@ h3 {
   gap: 0.5rem;
 }
 
+/* category + search + Go, in the middle of the header */
+.header-search {
+  flex: 1;
+  min-width: 0; /* without this the row can't get narrower than its content and sticks out on phones */
+  max-width: 560px;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* a bit lower than the normal inputs, so they line up with the buttons */
+.header-search select,
+.header-search input {
+  padding-block: 0.55rem;
+}
+
+.header-search select {
+  flex: none;
+  width: 12rem;
+}
+
+.header-search input {
+  flex: 1;
+  min-width: 0;
+}
+
 /* ---- account menu: a gold circle with the first letter, the menu opens under it ---- */
 
 .account {
@@ -537,37 +562,6 @@ select:focus {
   gap: 0.75rem;
 }
 
-/* listings, categories and featured sellers, at the top of the Shopping page */
-.stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  margin: 0 0 0.75rem;
-}
-
-.stats div {
-  display: flex;
-  flex-direction: column;
-}
-
-.stats dt {
-  order: 2;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-
-.stats dd {
-  order: 1;
-  margin: 0;
-  font-family: var(--display);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-}
-
 /* the big logo on the right of the hero, floating slowly */
 .hero-logo {
   position: relative;
@@ -586,175 +580,6 @@ select:focus {
   50% {
     transform: translateY(-10px) rotate(-1deg);
   }
-}
-
-/* ---- marketplace layout: sidebar + content ---- */
-
-.layout {
-  display: flex;
-  gap: 1.75rem;
-  align-items: flex-start;
-}
-
-.content {
-  flex: 1;
-  min-width: 0;
-}
-
-/* ---- category sidebar (desktop) ---- */
-
-.sidebar {
-  width: 230px;
-  flex-shrink: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.1rem;
-  position: sticky;
-  top: 1.5rem;
-}
-
-.side-title {
-  margin: 0 0 0.75rem 0.4rem;
-  font-family: var(--font);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.side-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 2px;
-}
-
-.side-item button {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  text-align: left;
-  font: inherit;
-  font-size: 0.92rem;
-  color: var(--text);
-  background: none;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  padding: 0.5rem 0.65rem;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.side-item button:hover {
-  background: var(--hover);
-}
-
-.side-item.active button {
-  background: var(--gold-soft);
-  border-color: var(--gold-line);
-  color: var(--gold);
-}
-
-.count {
-  min-width: 1.6rem;
-  padding: 0 0.45rem;
-  border-radius: 999px;
-  background: var(--surface-3);
-  color: var(--muted);
-  font-size: 0.75rem;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-
-.side-item.active .count {
-  background: var(--gold);
-  color: var(--on-gold);
-}
-
-/* ---- category menu (mobile dropdown, custom) ---- */
-
-.menu {
-  display: none;
-  position: relative;
-  margin-bottom: 1rem;
-}
-
-.menu-btn {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font: inherit;
-  font-weight: 600;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  padding: 0.7rem 0.95rem;
-  cursor: pointer;
-}
-
-.menu-list {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(100% + 6px);
-  z-index: 10;
-  list-style: none;
-  margin: 0;
-  padding: 0.4rem;
-  background: var(--surface-2);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow);
-}
-
-.menu-list button {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  text-align: left;
-  font: inherit;
-  color: var(--text);
-  background: none;
-  border: none;
-  border-radius: 8px;
-  padding: 0.55rem 0.65rem;
-  cursor: pointer;
-}
-
-.menu-list button:hover {
-  background: var(--hover);
-}
-
-.menu-list .active button {
-  color: var(--gold);
-}
-
-/* ---- search bar ---- */
-
-.search {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-}
-
-.search label {
-  font-weight: 600;
-  color: var(--muted);
-}
-
-.search input {
-  flex: 1;
-  min-width: 0;
 }
 
 /* ---- listing cards grid ---- */
@@ -1186,7 +1011,7 @@ select:focus {
   }
 }
 
-/* ---- phone width: one column, menu instead of sidebar ---- */
+/* ---- phone width: one column, the search goes under the logo ---- */
 
 @media (max-width: 700px) {
   .header,
@@ -1211,29 +1036,15 @@ select:focus {
     padding: 2rem 1.4rem;
   }
 
-  .stats {
-    gap: 1.1rem;
+  /* order 3 + the full width: the search drops to its own row under the logo and the circle */
+  .header-search {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
   }
 
-  .stats dt {
-    font-size: 0.66rem;
-    letter-spacing: 0.06em;
-  }
-
-  .stats dd {
-    font-size: 1.35rem;
-  }
-
-  .layout {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    display: none;
-  }
-
-  .menu {
-    display: block;
+  .header-search select {
+    width: 10rem;
   }
 
   .grid {
