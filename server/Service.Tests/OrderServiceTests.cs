@@ -57,6 +57,20 @@ public class OrderServiceTests
         Assert.Equal("Not enough stock available.", error.Message);
     }
 
+    // a seller can't buy their own listing, the buyer id is the same as the seller id
+    [Fact]
+    public void PlaceOrder_OwnListing()
+    {
+        using var db = TestDatabase.Create();
+        db.Insert(new User { Id = "u1", UserName = "seller" });
+        db.Insert(new Listing { ListingId = "l1", VendorId = "u1", CategoryId = 1, Title = "Knife", Price = 10, StockQuantity = 5 });
+        var service = new OrderService(db, new FixedRandom(50));
+        var dto = new PlaceOrderRequest("u1", "l1", 1);
+
+        var error = Assert.Throws<ValidationException>(() => service.PlaceOrder(dto));
+        Assert.Equal("You can't buy your own listing", error.Message);
+    }
+
     // 20% off after MORE than 10 earlier orders from the same vendor
     // InlineData = price, quantity, earlier orders, expected total
     [Theory]
