@@ -1,0 +1,23 @@
+# starts the whole app with one command: docker compose up --build
+services:
+  api:
+    build:
+      # the API Dockerfile copies server/..., so it builds from the repo root
+      context: .
+      dockerfile: server/API/Dockerfile
+    # the browser calls the API on localhost:5000, inside the container it runs on 8080
+    ports:
+      - "5000:8080"
+    # keeps the database when the container is stopped or rebuilt
+    volumes:
+      - db-data:/app/data
+
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  db-data:
