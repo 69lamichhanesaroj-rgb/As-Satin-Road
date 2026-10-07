@@ -28,6 +28,8 @@ export function ShoppingPage() {
     const [quantity, setQuantity] = useState(1);
     const [placing, setPlacing] = useState(false);
     const [result, setResult] = useState<BuyResult | null>(null);
+    // set when we wanted more than the real stock, e.g. "Only 5 left..."
+    const [stockNote, setStockNote] = useState("");
 
     const user = getSavedUser();
     const navigate = useNavigate();
@@ -73,11 +75,13 @@ export function ShoppingPage() {
         setSelected(l);
         setQuantity(1);
         setResult(null);
+        setStockNote("");
     }
 
     function closeModal() {
         setSelected(null);
         setResult(null);
+        setStockNote("");
         load(); // reload everything: new stock, maybe new featured vendors
     }
 
@@ -91,6 +95,7 @@ export function ShoppingPage() {
                 listingId: selected.listingId,
                 quantity,
             });
+            setStockNote("");
             if (r.wasFbiRaid) {
                 setResult({ kind: "raid", message: r.message ?? "FBI raid!", total: null });
             } else if (r.order?.isDiscountApplied) {
@@ -107,7 +112,27 @@ export function ShoppingPage() {
                 });
             }
         } catch (e: any) {
-            setResult({ kind: "error", message: e.error?.detail ?? "Order failed", total: null });
+            // the stock we show can be old (someone else bought, or the seller changed it),
+            // so ask the server how many are really left
+            try {
+                const all = await api.api.listingGetActiveListings();
+                const fresh = all.find((l) => l.listingId === selected.listingId);
+                if (!fresh) {
+                    // the server only sends listings with stock, so not found = 0 left
+                    setSelected({ ...selected, stockQuantity: 0 });
+                    setResult({ kind: "error", message: "This is sold out now.", total: null });
+                } else if (quantity > (fresh.stockQuantity ?? 0)) {
+                    // some are left: show the real number and keep the buy form open
+                    const left = fresh.stockQuantity ?? 0;
+                    setSelected(fresh);
+                    setQuantity(left);
+                    setStockNote(`Only ${left} left, so you can buy at most ${left}.`);
+                } else {
+                    setResult({ kind: "error", message: e.error?.detail ?? "Order failed", total: null });
+                }
+            } catch {
+                setResult({ kind: "error", message: e.error?.detail ?? "Order failed", total: null });
+            }
         } finally {
             setPlacing(false);
         }
@@ -184,6 +209,9 @@ export function ShoppingPage() {
                         {user && selected.vendorId === user.id && (
                             <p className="notice">This is your listing.</p>
                         )}
+
+                        {/* "Only 5 left..." after the server said there was not enough stock */}
+                        {stockNote && <p className="notice">{stockNote}</p>}
 
                         {result === null ? (
                             user ? (
