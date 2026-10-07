@@ -588,6 +588,16 @@ select:focus {
   animation: sheen 4s ease-in-out 1s infinite;
 }
 
+/* the gold devil after "No questions asked", about as high as the letters, sitting on the line */
+.devil {
+  height: 0.8em;
+  margin-left: 0.08em;
+}
+
+.no-break {
+  white-space: nowrap;
+}
+
 @keyframes sheen {
   0% {
     background-position: 100% 0;

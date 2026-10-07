@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- small gold devil face, it takes the place of the dot after "No questions asked" on the home page -->
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE9AE"/>
+      <stop offset=".38" stop-color="#F0C25E"/>
+      <stop offset=".7" stop-color="#D49A3A"/>
+      <stop offset="1" stop-color="#9A661C"/>
+    </linearGradient>
+  </defs>
+  <!-- the head and both horns are one shape -->
+  <path fill="url(#gold)" d="M16.45 42.16C19.26 36.86 5 26 9 7C16 19 24.21 30.67 32.16 26.45A38 38 0 0 1 67.84 26.45C75.79 30.67 84 19 91 7C95 26 80.74 36.86 83.55 42.16A38 38 0 1 1 16.45 42.16Z"/>
+  <!-- the eyes and the grin -->
+  <path fill="#1c1408" d="M27 47L45 54C45 61 41 65 36.5 65C31 65 27 60 27 53Z M73 47L55 54C55 61 59 65 63.5 65C69 65 73 60 73 53Z M30 71Q50 81 70 71Q65 88 50 88Q35 88 30 71Z"/>
+</svg>
