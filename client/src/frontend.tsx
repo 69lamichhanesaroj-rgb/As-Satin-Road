@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       { path: "shopping", element: <ShoppingPage /> },
       { path: "shop", element: <MyShopPage /> },
       { path: "orders", element: <MyOrdersPage /> },
-      { path: "admin", element: <AdminPage /> },
+      { path: "dashboard", element: <AdminPage /> },
       { path: "login", element: <LoginPage /> },
       // every other address
       { path: "*", element: <NotFoundPage /> },

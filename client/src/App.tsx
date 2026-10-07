@@ -132,7 +132,7 @@ export function App() {
                                             <button className={navClass('/orders')} onClick={() => go('/orders')}>My orders</button>
                                             {/* only the admin sees this link, the server checks the role too */}
                                             {user.role === "admin" && (
-                                                <button className={navClass('/admin')} onClick={() => go('/admin')}>Dashboard</button>
+                                                <button className={navClass('/dashboard')} onClick={() => go('/dashboard')}>Dashboard</button>
                                             )}
                                         </div>
                                         <button className="user-menu-item" onClick={handleLogout}>Log out</button>

@@ -8,6 +8,8 @@ export function AdminPage() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [newName, setNewName] = useState("");
     const [error, setError] = useState("");
+    // the category whose Delete was clicked once and now asks "Really delete?"
+    const [confirmingId, setConfirmingId] = useState<number | null>(null);
 
     const user = getSavedUser();
 
@@ -48,6 +50,7 @@ export function AdminPage() {
     }
 
     async function renameCategory(id: number) {
+        setConfirmingId(null); // clicking anything else takes back the "Really delete?"
         const name = prompt("New name:");
         if (!name) return;
         try {
@@ -60,6 +63,12 @@ export function AdminPage() {
     }
 
     async function deleteCategory(id: number) {
+        // first click arms the button, second click really deletes (same as in My shop)
+        if (confirmingId !== id) {
+            setConfirmingId(id);
+            return;
+        }
+        setConfirmingId(null);
         try {
             await api.api.categoryDeleteCategory({ categoryId: id, userId });
             setError("");
@@ -70,8 +79,9 @@ export function AdminPage() {
     }
 
     return (
-        <div className="panel">
-            <p className="eyebrow">Admin</p>
+        // "panel fill": the box fills the screen, the top stays and only the list scrolls
+        <div className="panel fill">
+            <p className="eyebrow">Dashboard</p>
             <h2>Categories</h2>
             <p className="subtitle">Add, rename or delete the categories sellers can pick.</p>
             <div className="row">
@@ -88,7 +98,9 @@ export function AdminPage() {
                         </span>
                         <div className="actions">
                             <button className="btn" onClick={() => renameCategory(c.categoryId!)}>Rename</button>
-                            <button className="btn btn-danger" onClick={() => deleteCategory(c.categoryId!)}>Delete</button>
+                            <button className="btn btn-danger" onClick={() => deleteCategory(c.categoryId!)}>
+                                {confirmingId === c.categoryId ? "Really delete?" : "Delete"}
+                            </button>
                         </div>
                     </li>
                 )}
