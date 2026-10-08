@@ -55,7 +55,18 @@ using (var scope = app.Services.CreateScope())
     {
         TableOptions = TableOptions.CreateIfNotExists
     });
-    
+
+}
+
+// "dotnet run -- seed": delete everything, fill the database with demo data, then stop
+if (args.Contains("seed"))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<MyDatabaseConnection>();
+    var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+    DemoData.Fill(db, hasher);
+    Console.WriteLine("Done: the database has the demo data now.");
+    return;
 }
 
 app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().SetIsOriginAllowed(_ => true));

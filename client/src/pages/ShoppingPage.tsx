@@ -174,7 +174,7 @@ export function ShoppingPage() {
                             {/* the category's icon instead of a picture */}
                             <div className="card-top">
                                 {isFeatured(l) && <span className="badge">★ Featured seller</span>}
-                                <CategoryIcon id={l.categoryId ?? 0} name={l.categoryName ?? "?"} size={64} />
+                                <CategoryIcon name={l.categoryName ?? "?"} size={64} />
                             </div>
                             <div className="card-body">
                                 <h3 className="card-title">{l.title}</h3>
@@ -196,7 +196,7 @@ export function ShoppingPage() {
             {selected && (
                 <Modal label={selected.title ?? "Product"} onClose={closeModal}>
                     <div className="modal-icon">
-                        <CategoryIcon id={selected.categoryId ?? 0} name={selected.categoryName ?? "?"} size={56} />
+                        <CategoryIcon name={selected.categoryName ?? "?"} size={56} />
                     </div>
                     {isFeatured(selected) && <span className="badge">★ Featured seller</span>}
                         <h3 className="card-title">{selected.title}</h3>

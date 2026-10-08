@@ -112,29 +112,18 @@ h3 {
   font-weight: 600;
 }
 
-/* every page fades up a little when you open it.
-   no "both"/"forwards" here: a transform that stays after the animation would make
-   the product window open inside the page instead of in the middle of the screen */
+/* every page fades in when you open it (fadeIn is further down, the popup background uses it too).
+   only the opacity changes: when the page also slid up 10px, a full screen page was 10px too tall
+   for a moment and a scrollbar flashed */
 .page {
   flex: 1 0 auto; /* at least as tall as the space between header and footer */
   padding-block: 0.9rem 1.5rem; /* the space on top is the same as above the logo in the header */
-  animation: fadeUp 0.45s ease;
+  animation: fadeIn 0.45s ease;
 }
 
 /* a page with a title bar: the bar has that space on top itself (see .page-head) */
 .page:has(.page-head) {
   padding-top: 0;
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 /* ---- header + nav (App) ---- */
@@ -592,6 +581,7 @@ select:focus {
 
 /* the gold devil after "No questions asked", about as high as the letters, sitting on the line */
 .devil {
+  width: auto;
   height: 0.8em;
   margin-left: 0.08em;
 }

@@ -82,6 +82,25 @@ bun run generate:api
 
 To start over with an empty database, delete `dev.db` (with Docker: `docker compose down -v`).
 
+**Demo data.** One command deletes everything in `dev.db` and fills it with demo data (`server/API/DemoData.cs`).
+Stop the API first, then:
+
+```
+cd server/API
+dotnet run -- seed
+```
+
+Every demo account has the password `satin123`:
+
+| Username | Role |
+|---|---|
+| asim@gmail.com | admin |
+| samir, oliver, emma, lucas | buyers (samir has 12 orders from heisenberg, the last one with 20% off) |
+| heisenberg, blackbeard | featured sellers (more than 100 sales) |
+| indiana, gringotts | sellers |
+
+There are 6 categories and 13 listings. Start the API again with `dotnet run` afterwards.
+
 ## Tests
 
 ```

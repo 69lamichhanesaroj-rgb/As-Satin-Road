@@ -75,7 +75,8 @@ export function App() {
             <header className="header">
                 {/* the logo is the home link */}
                 <button className="brand" onClick={() => go('/')}>
-                    <img className="brand-mark" src={logoSr} alt="" />
+                    {/* width/height on every image: the browser keeps the space free before it loads (Lighthouse) */}
+                    <img className="brand-mark" src={logoSr} alt="" width={30} height={25} />
                     <span className="wordmark">SATIN ROAD</span>
                 </button>
                 {/* category + search, only on the Shopping page. The list filters while you type */}
@@ -154,7 +155,7 @@ export function App() {
                 </main>
             </div>
             <footer className="footer">
-                <img src={logoSr} alt="" />
+                <img src={logoSr} alt="" width={19} height={16} />
                 Satin Road is a school project. Nothing here is real or for sale.
             </footer>
         </div>
