@@ -37,7 +37,7 @@ export function LoginPage() {
     return (
         <div className="auth">
             <div className="panel">
-                <img className="auth-logo" src={logoSr} alt="" />
+                <img className="auth-logo" src={logoSr} alt="" width={112} height={92} />
                 <h2>Welcome back</h2>
                 <p className="subtitle">Log in, or make a new account.</p>
                 <label className="field">

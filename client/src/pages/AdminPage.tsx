@@ -4,6 +4,7 @@ import { api } from "../apiClient";
 import type { Category } from "../api/Api";
 import { CategoryIcon } from "../components/CategoryIcon";
 import { Empty } from "../components/Empty";
+import { Modal } from "../components/Modal";
 import { getSavedUser } from "../user";
 
 export function AdminPage() {
@@ -12,6 +13,10 @@ export function AdminPage() {
     const [error, setError] = useState("");
     // the category whose Delete was clicked once and now asks "Really delete?"
     const [confirmingId, setConfirmingId] = useState<number | null>(null);
+    // the rename window: which category, the new name, and the error inside the window
+    const [renaming, setRenaming] = useState<Category | null>(null);
+    const [renameText, setRenameText] = useState("");
+    const [renameError, setRenameError] = useState("");
 
     const user = getSavedUser();
     const navigate = useNavigate();
@@ -68,16 +73,23 @@ export function AdminPage() {
         }
     }
 
-    async function renameCategory(id: number) {
+    // opens the rename window with the old name already in the box
+    function openRename(c: Category) {
         setConfirmingId(null); // clicking anything else takes back the "Really delete?"
-        const name = prompt("New name:");
-        if (!name) return;
+        setRenaming(c);
+        setRenameText(c.categoryName ?? "");
+        setRenameError("");
+    }
+
+    async function saveRename() {
+        if (!renaming) return;
         try {
-            await api.api.categoryRenameCategory({ userId }, { categoryId: id, newName: name });
+            await api.api.categoryRenameCategory({ userId }, { categoryId: renaming.categoryId!, newName: renameText });
+            setRenaming(null);
             setError("");
             loadCategories();
         } catch (e: any) {
-            showError(e);
+            setRenameError(e.error?.detail ?? "Something went wrong");
         }
     }
 
@@ -115,11 +127,11 @@ export function AdminPage() {
                     {categories.map(c =>
                         <li key={c.categoryId} className="list-item">
                             <span className="list-name">
-                                <CategoryIcon id={c.categoryId ?? 0} name={c.categoryName ?? "?"} size={36} />
+                                <CategoryIcon name={c.categoryName ?? "?"} size={36} />
                                 {c.categoryName}
                             </span>
                             <div className="actions">
-                                <button className="btn" onClick={() => renameCategory(c.categoryId!)}>Rename</button>
+                                <button className="btn" onClick={() => openRename(c)}>Rename</button>
                                 <button className="btn btn-danger" onClick={() => deleteCategory(c.categoryId!)}>
                                     {confirmingId === c.categoryId ? "Really delete?" : "Delete"}
                                 </button>
@@ -127,6 +139,24 @@ export function AdminPage() {
                         </li>
                     )}
                 </ul>
+            )}
+
+            {/* the rename window, the same kind of window as Edit listing.
+                a form, so pressing Enter also saves */}
+            {renaming && (
+                <Modal label="Rename category" onClose={() => setRenaming(null)}>
+                    <h3>Rename category</h3>
+                    <form onSubmit={(e) => { e.preventDefault(); saveRename(); }}>
+                        <label className="field">
+                            Name
+                            <input value={renameText} onChange={e => setRenameText(e.target.value)} autoFocus />
+                        </label>
+                        {renameError && <p className="error">{renameError}</p>}
+                        <div className="buy-row">
+                            <button className="btn btn-primary" type="submit">Save</button>
+                        </div>
+                    </form>
+                </Modal>
             )}
         </div>
     );

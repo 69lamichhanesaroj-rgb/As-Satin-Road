@@ -7,7 +7,7 @@ import devil from "../devil.svg";
 export function Empty({ text, children }: { text: string; children?: ReactNode }) {
     return (
         <div className="empty">
-            <img className="empty-devil" src={devil} alt="" />
+            <img className="empty-devil" src={devil} alt="" width={44} height={44} />
             <p>{text}</p>
             {children}
         </div>

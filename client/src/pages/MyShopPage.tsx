@@ -186,7 +186,7 @@ export function MyShopPage() {
                             }}
                         >
                             <div className="card-top">
-                                <CategoryIcon id={l.categoryId ?? 0} name={l.categoryName ?? "?"} size={64} />
+                                <CategoryIcon name={l.categoryName ?? "?"} size={64} />
                             </div>
                             <div className="card-body">
                                 <h3 className="card-title">{l.title}</h3>
