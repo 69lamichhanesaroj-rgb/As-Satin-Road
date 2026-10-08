@@ -90,16 +90,17 @@ cd server/API
 dotnet run -- seed
 ```
 
-Every demo account has the password `satin123`:
+Every demo account has the password `12345`:
 
 | Username | Role |
 |---|---|
 | asim@gmail.com | admin |
-| samir, oliver, emma, lucas | buyers (samir has 12 orders from heisenberg, the last one with 20% off) |
+| samir@gmail.com, oliver | buy and sell (samir has 12 orders from heisenberg, the last one with 20% off) |
+| emma, lucas | buyers |
 | heisenberg, blackbeard | featured sellers (more than 100 sales) |
 | indiana, gringotts | sellers |
 
-There are 6 categories and 13 listings. Start the API again with `dotnet run` afterwards.
+There are 6 categories and 17 listings. Start the API again with `dotnet run` afterwards.
 
 ## Tests
 

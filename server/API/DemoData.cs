@@ -7,7 +7,7 @@ namespace API;
 
 // "dotnet run -- seed" calls Fill: it deletes everything in the database
 // and fills it with demo data, so the app looks good in a demo.
-// Every demo account has the same demo password: satin123
+// Every demo account has the same demo password: 12345
 public static class DemoData
 {
     public static void Fill(MyDatabaseConnection db, IPasswordHasher hasher)
@@ -20,8 +20,9 @@ public static class DemoData
 
         // the admin and the buyers
         AddUser(db, hasher, "asim@gmail.com", "admin", 0);
-        var samir = AddUser(db, hasher, "samir", "user", 0);
-        var oliver = AddUser(db, hasher, "oliver", "user", 0);
+        // samir and oliver buy and also sell (2 sales each, see the orders below)
+        var samir = AddUser(db, hasher, "samir@gmail.com", "user", 2);
+        var oliver = AddUser(db, hasher, "oliver", "user", 2);
         var emma = AddUser(db, hasher, "emma", "user", 0);
         var lucas = AddUser(db, hasher, "lucas", "user", 0);
 
@@ -51,6 +52,10 @@ public static class DemoData
         AddListing(db, gringotts, documents, "Diploma from any university", 180m, 30);
         var parrot = AddListing(db, gringotts, pets, "Talking parrot", 450m, 5);
         var pen = AddListing(db, gringotts, gadgets, "Invisible ink pen", 9.99m, 60);
+        var rolex = AddListing(db, samir, gadgets, "Fake Rolex, looks real", 89.99m, 12);
+        var pills = AddListing(db, samir, pharmacy, "Mystery pills", 15m, 50);
+        var stars = AddListing(db, oliver, weaponry, "Ninja throwing stars", 24.99m, 30);
+        var scorpion = AddListing(db, oliver, pets, "Pet scorpion", 60m, 4);
 
         // Samir buys the candy 12 times. The 12th order has 11 earlier ones, so it gets 20% off
         for (int i = 1; i <= 12; i++)
@@ -62,6 +67,12 @@ public static class DemoData
         AddOrder(db, oliver, parrot, 1, false, 2);
         AddOrder(db, emma, goggles, 2, false, 3);
         AddOrder(db, lucas, pen, 3, false, 1);
+
+        // samir and oliver sell to each other and to the others
+        AddOrder(db, emma, rolex, 1, false, 5);
+        AddOrder(db, oliver, pills, 2, false, 3);
+        AddOrder(db, lucas, stars, 2, false, 2);
+        AddOrder(db, samir, scorpion, 1, false, 1);
     }
 
     static User AddUser(MyDatabaseConnection db, IPasswordHasher hasher, string username, string role, int totalSales)
@@ -69,7 +80,7 @@ public static class DemoData
         var user = new User
         {
             UserName = username,
-            PasswordHash = hasher.HashAndSaltPassword("satin123"),
+            PasswordHash = hasher.HashAndSaltPassword("12345"),
             Role = role,
             TotalSales = totalSales
         };
