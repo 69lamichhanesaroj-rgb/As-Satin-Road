@@ -22,15 +22,15 @@ public static class DemoData
         AddUser(db, hasher, "asim@gmail.com", "admin", 0);
         // samir and oliver buy and also sell (2 sales each, see the orders below)
         var samir = AddUser(db, hasher, "samir@gmail.com", "user", 2);
-        var oliver = AddUser(db, hasher, "oliver", "user", 2);
-        var emma = AddUser(db, hasher, "emma", "user", 0);
-        var lucas = AddUser(db, hasher, "lucas", "user", 0);
+        var oliver = AddUser(db, hasher, "oliver@gmail.com", "user", 2);
+        var emma = AddUser(db, hasher, "emma@gmail.com", "user", 0);
+        var lucas = AddUser(db, hasher, "lucas@gmail.com", "user", 0);
 
         // the sellers. More than 100 sales = featured seller, so the first two are featured
-        var heisenberg = AddUser(db, hasher, "heisenberg", "user", 125);
-        var blackbeard = AddUser(db, hasher, "blackbeard", "user", 104);
-        var indiana = AddUser(db, hasher, "indiana", "user", 1);
-        var gringotts = AddUser(db, hasher, "gringotts", "user", 3);
+        var heisenberg = AddUser(db, hasher, "heisenberg@gmail.com", "user", 125);
+        var blackbeard = AddUser(db, hasher, "blackbeard@gmail.com", "user", 104);
+        var indiana = AddUser(db, hasher, "indiana@gmail.com", "user", 1);
+        var gringotts = AddUser(db, hasher, "gringotts@gmail.com", "user", 3);
 
         var pharmacy = AddCategory(db, "Pharmacy");
         var weaponry = AddCategory(db, "Weaponry");

@@ -95,10 +95,10 @@ Every demo account has the password `12345`:
 | Username | Role |
 |---|---|
 | asim@gmail.com | admin |
-| samir@gmail.com, oliver | buy and sell (samir has 12 orders from heisenberg, the last one with 20% off) |
-| emma, lucas | buyers |
-| heisenberg, blackbeard | featured sellers (more than 100 sales) |
-| indiana, gringotts | sellers |
+| samir@gmail.com, oliver@gmail.com | buy and sell (samir has 12 orders from heisenberg, the last one with 20% off) |
+| emma@gmail.com, lucas@gmail.com | buyers |
+| heisenberg@gmail.com, blackbeard@gmail.com | featured sellers (more than 100 sales) |
+| indiana@gmail.com, gringotts@gmail.com | sellers |
 
 There are 6 categories and 17 listings. Start the API again with `dotnet run` afterwards.
 
