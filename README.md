@@ -193,3 +193,34 @@ lighthouse http://localhost:3000/ --only-categories=performance,accessibility,be
 SEO improved from **92 to 100** thanks to the robots.txt route. Performance only moved
 from **74 to 75**: it is held back by Cumulative Layout Shift, which stayed at **~0.84** and is
 nearly the whole penalty. Lighthouse points the remaining shift at the top-level `.app` container.
+
+**After the polish (#71)**
+
+We ran Lighthouse again on the new home page, in Chrome DevTools (Incognito, Desktop), against the production server:
+
+```
+cd client
+bun run start
+```
+(on Windows PowerShell with another port: `$env:PORT=4000; bun run start`, then open http://localhost:4000)
+
+| Category | Score |
+|---|---|
+| Performance | **98** |
+| Accessibility | 100 |
+| Best Practices | 100 |
+| SEO | 100 |
+
+What made the difference:
+
+- The big layout shift came from the old home page: it showed "Loading..." first and then swapped in
+  the whole page with the listings. The listings moved to the Shopping page, so the home page has
+  nothing to load and shows the banner straight away. Layout shift went from ~0.84 to 0.
+- Every page only fades in now (no slide), so a full screen page is never taller than the screen
+  for a moment (that also made a scrollbar flash).
+- Every image has a width and height, so the browser keeps the space free before it loads.
+- Test the production server, not `bun dev`. The dev server sends 1.7 MB of JavaScript that is
+  not minified and not cached. Production sends about 330 KB, minified and cached for a year.
+
+What is still yellow: the Google Fonts stylesheet blocks the first paint for about 0.3 s.
+Downloading the two fonts into the project would fix it.
